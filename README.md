@@ -7,8 +7,8 @@ does what I say (declarative), doesn't hurt me (pure).
 Is that prolog? ... may...be? Haskell is wonderful, except when I want to do
 logic programming, which is all the time, so I'm always building logic 
 frameworks on top of Haskell, then using Haskell. I'd like to skip that step,
-maybe? (maybe not: building logical frameworks can be fun, too, e.g.: Reasoned
-Schemer).
+maybe? (maybe not: building logical frameworks can be fun, too, e.g.: [Reasoned
+Schemer](https://mitpress.mit.edu/books/reasoned-schemer-second-edition)).
 
 Prolog has its quirks. I also built an actionable ontology and deployed that
 to production... more than once, in Prolog, so I like Prolog.
