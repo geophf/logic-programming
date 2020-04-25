@@ -22,12 +22,13 @@ of the predicate. You should also indicate the intended data types of the
 arguments and the allowed flow patterns.
 
 The problems have different levels of difficulty. Those marked with a single 
-asterisk (*) are easy. If you have successfully solved the preceeding problems 
-you should be able to solve them within a few (say 15) minutes. Problems marked 
-with two asterisks (**) are of intermediate difficulty. If you are a skilled 
-Prolog programmer it shouldn't take you more than 30-90 minutes to solve them. 
-Problems marked with three asterisks (***) are more difficult. You may need more
-time (i.e. a few hours or more) to find a good solution.
+asterisk (&lowast;) are easy. If you have successfully solved the preceeding 
+problems you should be able to solve them within a few (say 15) minutes. 
+Problems marked with two asterisks (&lowast;&lowast;) are of intermediate 
+difficulty. If you are a skilled Prolog programmer it shouldn't take you more 
+than 30-90 minutes to solve them. Problems marked with three asterisks 
+(&lowast;&lowast;&lowast;) are more difficult. You may need more time (i.e. a 
+few hours or more) to find a good solution.
 
 note: the solutions provided here are implemented in Paul Tarau's
 [bin prolog](https://github.com/ptarau/binprolog).
