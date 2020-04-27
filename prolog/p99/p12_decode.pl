@@ -1,3 +1,5 @@
+:- ['utils/list'].
+
 /*
 P12 (**) Decode a run-length encoded list.
 Given a run-length code list generated as specified in problem P11. Construct 
@@ -20,12 +22,16 @@ decode(List, Answer) :- decode1(List, Answer, []).
 
 decode1([]) --> [].
 decode1([H|T]) -->
-  { repeat(H, Hs) },
+  { [N,Elt] = H,
+    repeat(N, Elt, Hs) },
   Hs,
   decode1(T).
+
+/* moving repeat to the utils suite
 
 repeat([]).
 repeat([0,_], []).
 repeat([N,C], [C|List]) :-
    M is N - 1,
    repeat([M,C], List).
+*/
