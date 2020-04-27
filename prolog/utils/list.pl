@@ -11,3 +11,18 @@ take([H|T],N,[H|List]) :-
    N > 1,
    N1 is N - 1,
    take(T, N1, List).
+
+/* ... and some combinatorics */
+
+/* pick(s) are (re)written in DCG-friendly-style */
+
+pick1(H, [H|T], T).
+pick1(P, [H|T], [H|L]) :-
+   pick1(P, T, L).
+
+pickN(0, [], List, List).
+pickN(N, [P|Ans], List, Rest) :-
+   N > 0,
+   M is N - 1,
+   pick1(P, List, L),
+   pickN(M, Ans, L, Rest).
