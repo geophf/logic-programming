@@ -27,11 +27,3 @@ dupli1([H|T],N) -->
    { repeat(N,H,Hs) },
    Hs,
    dupli1(T,N).
-
-/*
-rep(_,0,[]).
-rep(C,N,[C|List]) :-
-   N > 0,
-   M is N - 1,
-   rep(C,M,List).
-*/
