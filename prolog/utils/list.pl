@@ -20,9 +20,9 @@ pick1(H, [H|T], T).
 pick1(P, [H|T], [H|L]) :-
    pick1(P, T, L).
 
-pickN(0, [], List, List).
-pickN(N, [P|Ans], List, Rest) :-
-   N > 0,
-   M is N - 1,
-   pick1(P, List, L),
-   pickN(M, Ans, L, Rest).
+pickN(0, []) --> [].
+pickN(N, [P|Ans]) -->
+   { N > 0,
+     M is N - 1 },
+   pick1(P),
+   pickN(M, Ans).
