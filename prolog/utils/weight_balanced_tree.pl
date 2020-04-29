@@ -247,3 +247,13 @@ isSingle(Left, Right) :-
    size(Left, L),
    size(Right, R),
    L + 1 < 2 * (R + 1).
+
+/*  ---- TRAVERSAL ---- */
+
+to_list(Tree, Ans) :- to_list1(Tree, Ans, []).
+
+to_list1(tip) --> [].
+to_list1(bin(_, N, L, R)) -->
+   to_list1(L),
+   [N],
+   to_list1(R).
