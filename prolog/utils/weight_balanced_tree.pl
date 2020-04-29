@@ -1,5 +1,10 @@
+:- ['library/tree'].
+
 /*
-From: https://yoichihirai.com/bst.pdf
+From: 
+
+"Balancing weight-balanced trees," YOICHI HIRAI, KAZUHIKO YAMAMOTO, 2011
+https://yoichihirai.com/bst.pdf
 
 Excerpts follow:
 
@@ -74,6 +79,11 @@ insert kx (Bin sz ky l r) = case compare kx ky of
    EQ -> Bin sz kx l r
 */
 
+insertList([]) --> [].
+insertList([H|T]) -->
+   insert(H),
+   insertList(T).
+
 insert(Elt, tip, Tree) :- singleton(Elt, Tree).
 insert(Elt, Bin, Tree) :-
    term_hash(Elt, EltHash),
@@ -116,6 +126,16 @@ balanceL(Node, Left, Right, Tree) :-
      rotateL(Node, Left, Right, Tree).
 
 /*
+Let's add in the symmetric predicates
+*/
+
+balanceR(Node, Left, Right, Tree) :-
+   isBalanced(Left, Right) ->
+     bin(Node, Left, Right, Tree)
+   ;
+     rotateR(Node, Left, Right, Tree).
+
+/*
 There are two kinds of left rotations.
 One is called a single rotation and the other is called a double rotation.
 The isSingle predicate, which uses Γ, decides which rotation is used.
@@ -150,6 +170,26 @@ singleL(Elt, T1, bin(_, Node, T2, T3), Tree) :-
 doubleL(K1, T1, bin(_, K2, bin(_, K3, T2, T3), T4), Tree) :-
    bin(K1, T1, T2, Left),
    bin(K2, T3, T4, Right),
+   bin(K3, Left, Right, Tree).
+
+/*
+Symmetric functions for single and double rotations
+*/
+
+rotateR(Elt, Left, Right, Tree) :-
+   Left = bin(_, _, LL, LR),
+   (isSingle(LL, LR) ->
+      singleR(Elt, Left, Right, Tree)
+   ;
+      doubleR(Elt, Left, Right, Tree)).
+
+singleR(Elt, bin(_, Node, T2, T3), T1, Tree) :-
+   bin(Elt, T3, T1, T4),
+   bin(Node, T2, T4, Tree).   /* okay, here we go */
+
+doubleR(K1, bin(_, K2, T1, bin(_, K3, T2, T3)), T4, Tree) :-
+   bin(K2, T1, T2, Left),
+   bin(K1, T3, T4, Right),
    bin(K3, Left, Right, Tree).
 
 /*
