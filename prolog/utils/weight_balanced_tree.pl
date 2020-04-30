@@ -79,10 +79,10 @@ insert kx (Bin sz ky l r) = case compare kx ky of
    EQ -> Bin sz kx l r
 */
 
-insertList([]) --> [].
-insertList([H|T]) -->
+insert_list([]) --> [].
+insert_list([H|T]) -->
    insert(H),
-   insertList(T).
+   insert_list(T).
 
 insert(Elt, tip, Tree) :- singleton(Elt, Tree).
 insert(Elt, Bin, Tree) :-
@@ -126,7 +126,7 @@ balanceL(Node, Left, Right, Tree) :-
      rotateL(Node, Left, Right, Tree).
 
 /*
-Let's add in the symmetric predicates
+Let's add in the symmetric predicates. 
 */
 
 balanceR(Node, Left, Right, Tree) :-
@@ -174,6 +174,20 @@ doubleL(K1, T1, bin(_, K2, bin(_, K3, T2, T3), T4), Tree) :-
 
 /*
 Symmetric functions for single and double rotations
+
+
+Here are the comments to the sources of Data.Set.Internals from GHC:
+
+--   rotateL :: a -> Set a -> Set a -> Set a
+--   rotateL x l r@(Bin _ _ ly ry) | size ly < ratio*size ry = singleL x l r
+--                                 | otherwise               = doubleL x l r
+
+rotateL and rotateR check.
+
+--   rotateR :: a -> Set a -> Set a -> Set a
+--   rotateR x l@(Bin _ _ ly ry) r | size ry < ratio*size ly = singleR x l r
+--                                 | otherwise               = doubleR x l r
+--
 */
 
 rotateR(Elt, Left, Right, Tree) :-
@@ -183,14 +197,27 @@ rotateR(Elt, Left, Right, Tree) :-
    ;
       doubleR(Elt, Left, Right, Tree)).
 
-singleR(Elt, bin(_, Node, T2, T3), T1, Tree) :-
-   bin(Elt, T3, T1, T4),
-   bin(Node, T2, T4, Tree).   /* okay, here we go */
+/*
+--   singleL, singleR :: a -> Set a -> Set a -> Set a
+--   singleL x1 t1 (Bin _ x2 t2 t3)  = bin x2 (bin x1 t1 t2) t3
+--   singleR x1 (Bin _ x2 t1 t2) t3  = bin x2 t1 (bin x1 t2 t3)
+--
+--   doubleL, doubleR :: a -> Set a -> Set a -> Set a
+--   doubleL x1 t1 (Bin _ x2 (Bin _ x3 t2 t3) t4) =
+--              bin x3 (bin x1 t1 t2) (bin x2 t3 t4)
+--   doubleR x1 (Bin _ x2 t1 (Bin _ x3 t2 t3)) t4 =
+--              bin x3 (bin x2 t1 t2) (bin x1 t3 t4)
+--
+*/
 
-doubleR(K1, bin(_, K2, T1, bin(_, K3, T2, T3)), T4, Tree) :-
-   bin(K2, T1, T2, Left),
-   bin(K1, T3, T4, Right),
-   bin(K3, Left, Right, Tree).
+singleR(X1, bin(_, X2, T1, T2), T3, Tree) :-
+   bin(X1, T2, T3, T4),
+   bin(X2, T1, T4, Tree).
+
+doubleR(X1, bin(_, X2, T1, bin(_, X3, T2, T3)), T4, Tree) :-
+   bin(X2, T1, T2, Left),
+   bin(X1, T3, T4, Right),
+   bin(X3, Left, Right, Tree).
 
 /*
 Both single and double rotations move a part of the right subtree into the left 
@@ -257,3 +284,28 @@ to_list1(bin(_, N, L, R)) -->
    to_list1(L),
    [N],
    to_list1(R).
+
+/* Membership */
+
+has(Elt, Tree) :-
+   term_hash(Elt, EH),
+   has1(Elt, EH, Tree).
+
+has1(Elt, _, bin(_, Elt, _, _)).
+has1(Elt, EH, bin(_, N, L, R)) :-
+   not tree_eq(Elt, N),
+   term_hash(N, NH),
+   Comp is EH - NH,
+   branch(Comp, L, R, Branch),
+   has1(Elt, EH, Branch).
+
+branch(Comp, L, R, Branch) :-
+   Comp < 0 -> Branch = L ; Branch = R.
+
+/* equality is supposed to be = but the shape can differ, so used this one */
+
+tree_eq(Tree1, Tree2) :-
+   to_list(Tree1, T1),
+   to_list(Tree2, T2),
+   T1 = T2.
+tree_eq(Obj1, Obj2) :- Obj1 = Obj2.
