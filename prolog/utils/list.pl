@@ -12,6 +12,17 @@ take([H|T],N,[H|List]) :-
    N1 is N - 1,
    take(T, N1, List).
 
+flatten(Bumpy, Flat) :- flatten1(Bumpy, Flat, []).
+
+flatten1([]) --> [].
+flatten1([H|T]) -->
+   { is_list(H) -> flatten(H, Y); Y = [H] },
+   Y,
+   flatten1(T).
+
+is_list([]).
+is_list([_|_]).
+
 /* ... and some combinatorics */
 
 /* pick(s) are (re)written in DCG-friendly-style */

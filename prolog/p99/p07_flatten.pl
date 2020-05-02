@@ -39,3 +39,5 @@ flatten1([H|T]) -->
 
 is_list([]).
 is_list([_|_]).
+
+/* moving is_list/1 and flatten/2 (and flatten1/3) to utils/list library. */
