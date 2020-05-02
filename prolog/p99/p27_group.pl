@@ -88,7 +88,7 @@ Why 'in order'? Because a set is a set, regardless of order, so we can make
 a list a set by ensuring that every combination of the sets are used once.
 And we can do that with an in-order traversal of the domain.
 
-Voila! Sets-fo'-free... kinda.
+Voila! Sets-fo'-free... kinda... just don't squint too hard at it.
 */
 
 group(Domain, Partitions, Groups) :-
@@ -105,16 +105,67 @@ pickN_1(N, [P|Ans]) -->
    pick1_1(P),
    pickN_1(M, Ans).
 
+/*
 group1([], []) --> [].
 group1([N|Rest], [Pick|Ans]) -->
    pickN_1(N, Pick),
    group1(Rest, Ans).
 
-/*
-Okay, ... this solution generates one solution, the first solution with all
-names in order, then no other solutions, so it's something with my picks-
+?- group([aldo,beat,carla,david,evi,flip,gary,hugo,ida],[2,2,5],Gs).
+Gs=[[aldo,beat],[carla,david],[evi,flip,gary,hugo,ida]];
+
+no
+
+Okay, ... this implementation generates one solution, the first solution with 
+all names in order, then no other solutions, so it's something with my picks-
 predicates. I need to pick, then to narrow the list by the picked values 
 while still maintaining the in-orderness of the original list.
 
 So, ... progress?-.. ish?
+
+Trial 3:
+
+So, anyway, we've demonstrated pickN_1(X, Groupings, L) creates all subsets
+of Groupings of size X, and those subsets are in-order lists. So, we can pickN
+for each of the sub-groupings and ensure that each select is not the same as
+any of the prior groupings. I believe that's what the above said it did. I don't
+know why it's failing out after only the first selection.
+
+... or perhaps I do. I need a list-diff. Which we have in pickN/4.
+
+?- pickN(2, [carla,david], [aldo,beat,carla,david,evi,flip,gary,hugo,ida], L).
+L=[aldo,beat,evi,flip,gary,hugo,ida];
+
+no
+
+Armed with that knowledge, we rewrite group1/4 to this:
+*/
+
+group1([], []) --> [].
+group1([N|Rest], [Pick|Ans], Domain, Range) :-
+   pickN_1(N, Pick, Domain, _),
+   pickN(N, Pick, Domain, D1),
+   group1(Rest, Ans, D1, Range).
+
+/*
+Not exactly sure this was the approach sought, but ... *shrug* it does work.
+
+?- group([aldo,beat,carla,david,evi,flip,gary,hugo,ida],[2,2,5],Gs).
+Gs=[[aldo,beat],[carla,david],[evi,flip,gary,hugo,ida]];
+
+Gs=[[aldo,beat],[carla,evi],[david,flip,gary,hugo,ida]];
+
+Gs=[[aldo,beat],[carla,flip],[david,evi,gary,hugo,ida]];
+
+Gs=[[aldo,beat],[carla,gary],[david,evi,flip,hugo,ida]];
+
+Gs=[[aldo,beat],[carla,hugo],[david,evi,flip,gary,ida]];
+
+Gs=[[aldo,beat],[carla,ida],[david,evi,flip,gary,hugo]];
+
+Gs=[[aldo,beat],[david,evi],[carla,flip,gary,hugo,ida]];
+
+Gs=[[aldo,beat],[david,flip],[carla,evi,gary,hugo,ida]]
+
+yes
 */
