@@ -309,3 +309,37 @@ tree_eq(Tree1, Tree2) :-
    to_list(Tree2, T2),
    T1 = T2.
 tree_eq(Obj1, Obj2) :- Obj1 = Obj2.
+
+/* so what remains is delete from:
+
+https://github.com/haskell/containers/blob/master/containers/src/Data/Set/Internal.hs
+
+-- | /O(log n)/. Delete an element from a set.
+
+-- See Note: Type of local 'go' function
+delete :: Ord a => a -> Set a -> Set a
+delete = go
+  where
+    go :: Ord a => a -> Set a -> Set a
+    go !_ Tip = Tip
+    go x t@(Bin _ y l r) = case compare x y of
+        LT | l' `ptrEq` l -> t
+           | otherwise -> balanceR y l' r
+           where !l' = go x l
+        GT | r' `ptrEq` r -> t
+           | otherwise -> balanceL y l r'
+           where !r' = go x r
+        EQ -> glue l r
+
+{--------------------------------------------------------------------
+  [glue l r]: glues two trees together.
+  Assumes that [l] and [r] are already balanced with respect to each other.
+--------------------------------------------------------------------}
+glue :: Set a -> Set a -> Set a
+glue Tip r = r
+glue l Tip = l
+glue l@(Bin sl xl ll lr) r@(Bin sr xr rl rr)
+  | sl > sr = let !(m :*: l') = maxViewSure xl ll lr in balanceR m l' r
+  | otherwise = let !(m :*: r') = minViewSure xr rl rr in balanceL m l r'
+
+*/
