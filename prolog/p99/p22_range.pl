@@ -13,3 +13,5 @@ range(A,B,[A|Ans]) :-
    A =< B,
    C is A + 1,
    range(C,B,Ans).
+
+/* moving range/3 to utils/list-library. */

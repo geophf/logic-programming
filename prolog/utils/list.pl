@@ -30,6 +30,13 @@ flatten1([H|T]) -->
 is_list([]).
 is_list([_|_]).
 
+range(A,B,[]) :-
+   A > B.
+range(A,B,[A|Ans]) :-
+   A =< B,
+   C is A + 1,
+   range(C,B,Ans).
+
 /* List predicates that take a functional-argument: */
 
 reduce(_, Sum, [], Sum).
