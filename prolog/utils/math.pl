@@ -44,3 +44,10 @@ div_check(Littler, Sqrt, _, X, Bigger, Mod, G) :-
 cont(Littler, Sqrt, Bigger, Mod, G) :-
    M is Mod + 1,
    (M < Sqrt -> gcd1(Littler, Sqrt, Bigger, M, G) ; G = 1).
+
+/* ------------------------ coprime/2 ----------------------------- */
+
+coprime(A, B) :- gcd(A, B, 1).
+
+/* ... ooooooh! Hard one! */
+

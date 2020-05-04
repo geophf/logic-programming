@@ -11,3 +11,5 @@ Yes
 :- ['utils/math'].
 
 coprime(A, B) :- gcd(A, B, 1).
+
+/* moving coprime/2 to utils/math-library. */
