@@ -34,7 +34,8 @@ Le sigh.
 ## Postlude
 
 So, I now have a cat(egory) library in the making and have read up on higher-order functions
-in Prolog, so I like all these things. And implemented some data types.
+in Prolog, so I like all these things. And implemented some data types. All these sit in my
+[stdlib](https://github.com/geophf/logic-programming/blob/master/prolog/utils/stdlib.pl).
 
 Now, ... typing in Prolog, that'll be nice, as well as a wee-bit more of the functional style.
 
