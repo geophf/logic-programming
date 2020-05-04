@@ -45,8 +45,8 @@ div_check(Littler, Sqrt, _, X, Bigger, Mod, G) :-
 
 cont(Littler, Sqrt, Bigger, Mod, G) :-
    M is Mod + 1,
-   M < Sqrt,
-   gcd1(Littler, Sqrt, Bigger, M, G).
+   (M < Sqrt -> gcd1(Littler, Sqrt, Bigger, M, G) ; G = 1).
+  
 
 /*
 Define gcd as an arithmetic function; so you can use it like this:
@@ -65,3 +65,4 @@ And with that, I've created my first two Prolog arithmetic functions:
 G=9
 */
 
+/* moving gcd/3 to utils/math-library */
