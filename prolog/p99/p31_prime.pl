@@ -74,3 +74,5 @@ trial_divide_cont(N, I, DI, Stop, Mod) :-
 
 is_prime(N) :-
    trial_divide(N, N).
+
+/* moving is_prime/1 to utils/math-library */

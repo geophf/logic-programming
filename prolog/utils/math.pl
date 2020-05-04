@@ -11,39 +11,69 @@ divide(A, B, Quotient) :- Quotient is A / B.
 
 /* Some number-theory stuff */
 
+/* -------------------------- is_prime/1 --------------------------- */
+
+trial_divide(N, Mod) :- 
+   mod(N, 2, X),
+   (X = 0 -> Mod = 2 ; trial_divide3(N, Mod)).
+
+trial_divide3(N, Mod) :-
+   mod(N, 3, X),
+   (X = 0 -> Mod = 3 ; trial_divide_start(N, Mod)).
+
+trial_divide_start(N, Mod) :-
+   sqrt(N, Stop),
+   trial_divide_loop(N, 5, 2, Stop, Mod).
+
+trial_divide_loop(N, I, DI, Stop, Mod) :-
+   mod(N, I, X),
+   (X = 0 -> Mod = I ; trial_divide_cont(N, I, DI, Stop, Mod)).
+
+trial_divide_cont(N, I, DI, Stop, Mod) :-
+   NewI is I + DI,
+   NewDI is 6 - DI,
+   (NewI > Stop -> Mod = N ; trial_divide_loop(N, NewI, NewDI, Stop, Mod)).
+
+/*
+... talk about programming loops by continuations,* smh.
+
+* continuation, n: computed GOTO.
+*/
+
+is_prime(N) :-
+   trial_divide(N, N).
+
 /* -------------------------- gcd/3 -------------------------------- */
 /* Originally from p32_gcd.pl */
 
-gcd(X, X, X).
 gcd(X, Y, G) :-
    not X = Y,
 
 /* first, let's order these by littlest and biggest: */
 
    (X > Y -> A = Y, B = X; A = X, B = Y),
-   sqrt(A, Sqrt),
-   gcd1(A, Sqrt, B, 1, G).
+   gcd1(A, B, 1, G).
 
-gcd1(Littler, Sqrt, Bigger, Mod, G) :-
+gcd1(Littler, Bigger, Mod, G) :-
    mod(Littler, Mod, X),
-   gcd2(Littler, Sqrt, X, Bigger, Mod, G).
+   gcd2(Littler, X, Bigger, Mod, G).
 
-gcd2(Littler, Sqrt, 0, Bigger, Mod, G) :-
+gcd2(Littler, 0, Bigger, Mod, G) :-
    Div is Littler // Mod,  /* upper divisor */
    mod(Bigger, Div, X),
-   div_check(Littler, Sqrt, Div, X, Bigger, Mod, G).
-gcd2(Littler, Sqrt, X, Bigger, Mod, G) :-
+   div_check(Littler, Div, X, Bigger, Mod, G).
+gcd2(Littler, X, Bigger, Mod, G) :-
    X > 0,
-   cont(Littler, Sqrt, Bigger, Mod, G).
+   cont(Littler, Bigger, Mod, G).
 
-div_check(_, _, Div, 0, _, _, Div).
-div_check(Littler, Sqrt, _, X, Bigger, Mod, G) :-
+div_check(_, Div, 0, _, _, Div).
+div_check(Littler, _, X, Bigger, Mod, G) :-
    X > 0,
-   cont(Littler, Sqrt, Bigger, Mod, G).
+   cont(Littler, Bigger, Mod, G).
 
-cont(Littler, Sqrt, Bigger, Mod, G) :-
+cont(Littler, Bigger, Mod, G) :-
    M is Mod + 1,
-   (M < Sqrt -> gcd1(Littler, Sqrt, Bigger, M, G) ; G = 1).
+   (M =< Littler -> gcd1(Littler, Bigger, M, G) ; G = 1).
 
 /* ------------------------ coprime/2 ----------------------------- */
 
