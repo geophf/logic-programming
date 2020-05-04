@@ -32,3 +32,8 @@ few hours or more) to find a good solution.
 
 note: the solutions provided here are implemented in Paul Tarau's
 [bin prolog](https://github.com/ptarau/binprolog).
+
+## Sections
+
+* Working with Prolog lists p01 - p28
+* Arithmetic p31 -
