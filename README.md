@@ -30,3 +30,12 @@ explore the established languages until I can parse JSON like python does, and
 read and write to graph database like, ... well, python does.
 
 Le sigh.
+
+## Postlude
+
+So, I now have a cat(egory) library in the making and have read up on higher-order functions
+in Prolog, so I like all these things. And implemented some data types.
+
+Now, ... typing in Prolog, that'll be nice, as well as a wee-bit more of the functional style.
+
+Eh, programming is a work-in-progress, isn't it. Just like life.
