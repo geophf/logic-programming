@@ -39,3 +39,19 @@ in Prolog, so I like all these things. And implemented some data types.
 Now, ... typing in Prolog, that'll be nice, as well as a wee-bit more of the functional style.
 
 Eh, programming is a work-in-progress, isn't it. Just like life.
+
+## TODOs
+
+* JSON parsing library
+* REST access
+* Cypher/neo4j-bridge
+
+## Further Reading
+
+* [An Elementary Prolog Library](http://www.cs.otago.ac.nz/staffpriv/ok/pllib.htm)
+* ... and further [Richard O'Keefe musings](http://www.cs.otago.ac.nz/staffpriv/ok/)
+* [prolog :- tutorial.](https://www.cpp.edu/~jrfisher/www/prolog_tutorial/contents.html)
+* [Proving Metatheorems](http://twelf.org/wiki/Proving_metatheorems:Full_LF) in [Twelf](http://twelf.org/wiki/Main_Page)
+* [P99](https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/) ... 99 problems in Prolog
+* [Reasoned Schemer](https://mitpress.mit.edu/books/reasoned-schemer-second-edition) and [some workings](https://github.com/pkrumins/the-reasoned-schemer) on that problem set.
+* [binprolog](https://github.com/ptarau/binprolog) sources (bp)
