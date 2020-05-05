@@ -58,4 +58,11 @@ P=223
 yes
 ?- prime_factors(223, Fs).
 Fs=[223]
+
+Oooooh, @_primes_:
+
+?- next_prime(711181, P).
+P=711187
+
+... in subsecond time. #Prolog #Logic #NumberTheory
 */
