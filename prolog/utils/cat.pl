@@ -1,3 +1,5 @@
+:- op(1125, xfx, &&&).
+
 /* categories for Prolog
 
 apply(List, Pred) :-
@@ -26,7 +28,7 @@ compose(G, F, A0, A) :-
    apply(F, A1, A).
 */
 
-/* tuples */
+/* ---------------------------------- tuples ----------------------------- */
 
 fst(Term, Frist) :-
    Term =.. [_|[Frist|_]].
@@ -34,4 +36,10 @@ fst(Term, Frist) :-
 snd(Term, Secnod) :-
    Term =.. [_|[_|[Secnod|_]]].
 
+dup(X, X - X).
 
+/* ---------------------------------- Arrows ---------------------------- */
+
+'&&&'(F, G, X - Y, FX - GY) :-
+   apply(F, X, FX),
+   apply(G, Y, GY).
