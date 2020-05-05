@@ -28,3 +28,5 @@ encode1([H|T], [H1|T1]) :-
 
 count([H|T], [Len,H]) :-
    len(Len, [H|T]).
+
+/* moving encode to utils/list-library. */

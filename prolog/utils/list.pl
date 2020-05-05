@@ -2,6 +2,9 @@
 
 /* Some list routines */
 
+head([H|_], H).
+tail([_|T], T).
+
 concat(Lists, List) :- concat1(Lists, List, []).
 
 concat1([]) --> [].
@@ -12,6 +15,23 @@ repeat(N, Elt,  [Elt|List]) :-
    N > 0,
    M is N - 1,
    repeat(M, Elt, List).
+
+encode --> group, map(count).  /* head &&& length */
+
+/* should be head &&& length: */
+count([H|T], H - Len) :-
+   length([H|T], Len).
+
+group([], []).
+group([H|T], [Hs|Y]) :-
+   collect(H, T, Hs, Ts),
+   group(Ts, Y).
+
+collect(H, [], [H], []).
+collect(H, [H|T], [H|Ans], Rest) :-
+   collect(H, T, Ans, Rest).
+collect(H, [X|T], [H], [X|T]) :-
+   not H = X.
 
 take(_,0,[]).
 take([H|T],N,[H|List]) :-

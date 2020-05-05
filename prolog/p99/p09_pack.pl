@@ -19,3 +19,5 @@ collect(H, [H|T], [H|Ans], Rest) :-
    collect(H, T, Ans, Rest).
 collect(H, [X|T], [H], [X|T]) :-
    not H = X.
+
+/* moving pack/2 to utils/list-library as group/2 */
