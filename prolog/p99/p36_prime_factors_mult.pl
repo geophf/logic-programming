@@ -26,3 +26,5 @@ Fs=[3-2,5-1,7-1]
 ... which is really a bag, and can also be achieved by a reduce on prime_factors
 using avl_alter_f, but okay.
 */
+
+/* Adding this function to utils/math-library. */

@@ -66,3 +66,5 @@ P=711187
 
 ... in subsecond time. #Prolog #Logic #NumberTheory
 */
+
+/* Adding prime_factors/2, etc to utils/math-library. */
