@@ -18,8 +18,8 @@ So to build a { block } iteratively we need a little category-magic.
 :- ['utils/list'].
 :- ['utils/avl'].
 
-json(Obj) --> object(Obj).
-json(Arr) --> array(Arr).
+json(Obj) --> value(Obj).
+% json(Arr) --> array(Arr).
 
 object(object(Empty)) -->
    "{" , whitespace, "}",
