@@ -21,11 +21,11 @@ pow(N, P, Power) :- Power is N ** P.
 /* -------------------------- is_prime/1 --------------------------- */
 
 trial_divide(N, Mod) :- 
-   mod(N, 2, X),
+   X is mod(N, 2),
    (X = 0 -> Mod = 2 ; trial_divide3(N, Mod)).
 
 trial_divide3(N, Mod) :-
-   mod(N, 3, X),
+   X is mod(N, 3),
    (X = 0 -> Mod = 3 ; trial_divide_start(N, Mod)).
 
 trial_divide_start(N, Mod) :-
@@ -33,7 +33,7 @@ trial_divide_start(N, Mod) :-
    trial_divide_loop(N, 5, 2, Stop, Mod).
 
 trial_divide_loop(N, I, DI, Stop, Mod) :-
-   mod(N, I, X),
+   X is mod(N, I),
    (X = 0 -> Mod = I ; trial_divide_cont(N, I, DI, Stop, Mod)).
 
 trial_divide_cont(N, I, DI, Stop, Mod) :-
@@ -54,7 +54,7 @@ is_prime(N) :-
 /* Originally from p32_gcd.pl */
 
 gcd(X, Y, G) :-
-   not X = Y,
+   not(X = Y),
 
 /* first, let's order these by littlest and biggest: */
 
@@ -62,12 +62,12 @@ gcd(X, Y, G) :-
    gcd1(A, B, 1, G).
 
 gcd1(Littler, Bigger, Mod, G) :-
-   mod(Littler, Mod, X),
+   X is mod(Littler, Mod),
    gcd2(Littler, X, Bigger, Mod, G).
 
 gcd2(Littler, 0, Bigger, Mod, G) :-
    Div is Littler // Mod,  /* upper divisor */
-   mod(Bigger, Div, X),
+   X is mod(Bigger, Div),
    div_check(Littler, Div, X, Bigger, Mod, G).
 gcd2(Littler, X, Bigger, Mod, G) :-
    X > 0,
@@ -100,7 +100,7 @@ add_factors(N, _) -->
    [N].
 add_factors(N, [P|Primes]) -->
    { N > 1,
-     mod(N, P, Mod),
+     Mod is mod(N, P),
      N1 is N // P },
    add_factor(N, N1, N2, Mod, P, Primes, Ps),
    add_factors(N2, Ps).

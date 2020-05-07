@@ -31,7 +31,7 @@ collect(H, [], [H], []).
 collect(H, [H|T], [H|Ans], Rest) :-
    collect(H, T, Ans, Rest).
 collect(H, [X|T], [H], [X|T]) :-
-   not H = X.
+   not(H = X).
 
 take(_,0,[]).
 take([H|T],N,[H|List]) :-

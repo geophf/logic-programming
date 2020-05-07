@@ -26,7 +26,7 @@ OOH! I GET IT! ... GEDDIT???
 toitent_term(P-M, toitent_state(Product, PrevP - PrevM), ToitentState) :-
    pred(PrevM, M1),
    pred(P, P1),
-   NewProduct is Product * pow(PrevP, M1) * P1,
+   NewProduct is Product * (PrevP ** M1) * P1,
    ToitentState = toitent_state(NewProduct, P - M).
 
 phi(N, Toitent) :- 
@@ -34,3 +34,9 @@ phi(N, Toitent) :-
   pred(P, P1),
   reduce(toitent_term, toitent_state(P1, P - M), Factors, 
          toitent_state(Toitent, _)).
+
+/*
+?- time(phi(10070, Phi)).
+% 1,301 inferences, 0.000 CPU in 0.000 seconds (97% CPU, 8673333 Lips)
+Phi = 3744 .
+*/
