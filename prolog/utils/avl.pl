@@ -19,6 +19,7 @@
 */
 
 :- ['utils/cat'].
+:- ['library/tree'].
 
 %  ---+ Introduction
 %
