@@ -36,7 +36,7 @@ goldbacher(Even, Even = P + P1) :-
 List=[10 = 3+7,12 = 5+7,14 = 3+11,16 = 3+13,18 = 5+13,20 = 3+17]
 
 yes
-o
+
 But:
 
 ?- goldbach_list(1,1000,L).
@@ -45,9 +45,9 @@ culprit=>trailing in unify
 
 So, we n eed to move away from the naive implementation.
 
-Our plan of attack here is:
+Our plan of attack here is to:
 
-1.  to build an AVL tree up to the even number tested
+1.  build an AVL tree of primes up to the even number tested
 2.  pick/2 a number from that tree
 3.  verify its dual is in the tree
 4.  grow the tree for each even number tested.
@@ -98,7 +98,6 @@ goldbacher(AVL, Even, Even = P + P1) :-
    avl_has(AVL, P1).
 
 /*
-
 part II:
 
 In most cases, if an even number is written as the sum of two prime numbers, 
@@ -138,3 +137,5 @@ Len=537
 
 yes
 */
+
+/* let's move the comparison functionals to the library utils/cat */
