@@ -302,3 +302,7 @@ avl_dump(t(K, V, L, R, D), S) :-
   @license <http://www.fsf.org/licensing/licenses/gpl.html> GPL
   @version  $Revision: 1.1 $
   @date  $Date: 2006/03/25 02:07:05 $*/
+
+avl_pick(P, t(_, P, _, _, _)).
+avl_pick(Q, t(_, _, L, _, _)) :- avl_pick(Q, L).
+avl_pick(Q, t(_, _, _, R, _)) :- avl_pick(Q, R).
