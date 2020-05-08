@@ -167,31 +167,6 @@ avl_cmp_depth(t, D, D).
 avl_cmp_depth(t(_,_,_,_,AD), BD, D) :-
 	D is BD - AD.
 
-% avl_alter_f replaces an existing value with the value modified by AlterFn
-% or, if the value is not there, adds the default V
-%
-% avl_alter_f/5 uses apply/3 from my utils/cat library.
-
-avl_alter_f(t, K, V, _, t(K, V, t, t, 1)) :- !.
-avl_alter_f(t(NK, NV, L, R, D), K, V, AlterF, T) :-
-   compare(O, K, NK),
-   avl_alter_f1(O, NK, NV, L, R, D, K, V, AlterF, T).
-
-avl_alter_f1(=, NK, V0, L, R, D, _, _, AlterF, t(NK, V, L, R, D)) :-
-   apply(AlterF, V0, F0),
-   apply(F0, V, Fn),
-   call(Fn).
-avl_alter_f1(<, NK, NV, L, R, D, K, V, AlterF, T) :-
-        avl_alter_f(L, K, V, AlterF, L1),
-        (   L1 = t(_, _, _, _, D)
-        ->  avl_balance_left(NK, NV, L1, R, T)
-        ;   T = t(NK, NV, L1, R, D) ).
-avl_alter_f1(>, NK, NV, L, R, D, K, V, AlterF, T) :-
-        avl_alter_f(R, K, V, AlterF, R1),
-        (   R1 = t(_, _, _, _, D)
-        ->  avl_balance_right(NK, NV, L, R1, T)
-        ;   T = t(NK, NV, L, R1, D) ).
-
 %% avl_has(+Tree, +Key)
 %    checks whether the AVL tree contains an element with the given key.
 % 
@@ -303,6 +278,36 @@ avl_dump(t(K, V, L, R, D), S) :-
   @version  $Revision: 1.1 $
   @date  $Date: 2006/03/25 02:07:05 $*/
 
-avl_pick(P, t(_, P, _, _, _)).
-avl_pick(Q, t(_, _, L, _, _)) :- avl_pick(Q, L).
-avl_pick(Q, t(_, _, _, R, _)) :- avl_pick(Q, R).
+/* ----- below predicated added by Doug Auclair, beginning 2020-05-03 ----- */
+
+% avl_pick/3 provides nondeterministic iteration over the AVL tree's elements.
+
+avl_pick(K, V, t(K, V, _, _, _)).
+avl_pick(K, V, t(_, _, L, _, _)) :- avl_pick(K, V, L).
+avl_pick(K, V, t(_, _, _, R, _)) :- avl_pick(K, V, R).
+
+% avl_alter_f replaces an existing value with the value modified by AlterFn
+% or, if the value is not there, adds the default V
+%
+% avl_alter_f/5 uses apply/3 from my utils/cat library.
+
+avl_alter_f(t, K, V, _, t(K, V, t, t, 1)) :- !.
+avl_alter_f(t(NK, NV, L, R, D), K, V, AlterF, T) :-
+   compare(O, K, NK),
+   avl_alter_f1(O, NK, NV, L, R, D, K, V, AlterF, T).
+
+avl_alter_f1(=, NK, V0, L, R, D, _, _, AlterF, t(NK, V, L, R, D)) :-
+   apply(AlterF, V0, F0),
+   apply(F0, V, Fn),
+   call(Fn).
+avl_alter_f1(<, NK, NV, L, R, D, K, V, AlterF, T) :-
+        avl_alter_f(L, K, V, AlterF, L1),
+        (   L1 = t(_, _, _, _, D)
+        ->  avl_balance_left(NK, NV, L1, R, T)
+        ;   T = t(NK, NV, L1, R, D) ).
+avl_alter_f1(>, NK, NV, L, R, D, K, V, AlterF, T) :-
+        avl_alter_f(R, K, V, AlterF, R1),
+        (   R1 = t(_, _, _, _, D)
+        ->  avl_balance_right(NK, NV, L, R1, T)
+        ;   T = t(NK, NV, L, R1, D) ).
+
