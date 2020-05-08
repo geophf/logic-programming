@@ -35,3 +35,5 @@ yes
 ?- goldbach(123456, L).
 L=[7,123449]
 */
+
+/* moving goldbach/2 to utils/math */

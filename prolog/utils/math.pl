@@ -5,6 +5,12 @@ Getting rid of that pesky is/2 clause :)
 
 :- ['utils/list'].    /* for encode/2 */
 
+even(N) :-
+   X is mod(N, 2),
+   X = 0.
+odd(N) :-
+   not(even(N)).
+
 pred(N, P) :- minus(N, 1, P).
 succ(A, S) :- plus(1, A, S).
 plus(A, B, Sum) :- Sum is A + B.
@@ -18,7 +24,7 @@ pow(N, P, Power) :- Power is N ** P.
 
 /* Some number-theory stuff */
 
-/* -------------------------- is_prime/1 --------------------------- */
+/* -------------------------- primes  --------------------------- */
 
 trial_divide(N, Mod) :- 
    X is mod(N, 2),
@@ -49,6 +55,19 @@ trial_divide_cont(N, I, DI, Stop, Mod) :-
 
 is_prime(N) :-
    trial_divide(N, N).
+
+list_primes(Start, End, Primes) :-
+   range(Start, End, Range),
+   filter(is_prime, Range, Primes).
+
+/* -------------------------- goldbach ----------------------------- */
+
+goldbach(Even, [P, P1]) :-
+   Halvsies is Even // 2,
+   list_primes(2, Halvsies, Primes),
+   delete(P, Primes, _),
+   P1 is Even - P,
+   is_prime(P1). % ... or member(P1, Primes), perhaps?
 
 /* -------------------------- gcd/3 -------------------------------- */
 /* Originally from p32_gcd.pl */
