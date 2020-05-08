@@ -43,9 +43,14 @@ Eh, programming is a work-in-progress, isn't it. Just like life.
 
 ## TODOs
 
-* JSON parsing library
-* REST access
+* REST access ... or maybe shift data in and out, a la RedShift?
 * Cypher/neo4j-bridge
+
+## TODOnes
+
+* [JSON parsing library](https://github.com/geophf/logic-programming/blob/master/prolog/utils/json.pl)
+
+> ... but now we need to add custom deserializers that iterate over each node.
 
 ## Further Reading
 
