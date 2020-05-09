@@ -22,6 +22,8 @@ fail true fail
 fail fail fail
 */
 
+:- ['utils/cat'].
+:- ['utils/list'].
 :- ['library/tree'].
 
 % and(P, Q) :- P, Q.   % already defined
@@ -29,19 +31,38 @@ fail fail fail
 
 nor(P, Q) :- not(P), not(Q).
 xor(P, Q) :- P -> not(Q) ; Q.
-equ(P, P).
+equ(P, Q) :- P -> Q ; not(Q).  % ... proof-equality, not unification.
+
+do(_, []).
+do(Fn, [H|T]) :-
+   apply(Fn, H, F1),
+   call(F1),
+   do(Fn, T).
+
+print_var(N) :- print('V'), print(N), print('   ').
+
+print_heading(Vars) :-
+   length(Vars, Len),
+   range(1, Len, Ns),
+   do(print_var, Ns),
+   println('Ans'),
+   X is (Len + 1) * 5 + 1,
+   repeat(X, 45, Dashes),
+   name(Dashed, Dashes),
+   println(Dashed).
 
 table(P, Q, Expression) :- 
-   println('P    Q    Ans'),
-   println('--------------'),
-   tabled(P, Q, Expression).
+   print_heading([P, Q]),
+   tabled([P, Q], Expression).
 
-tabled(P, Q, Expression) :-
+ki_member(List, M) :- member(M, List).
+
+tabled(Vars, Expression) :-
    TF = [true, fail],
-   member(P, TF),
-   member(Q, TF),
+   do(ki_member(TF), Vars),
    (Expression -> Ans = true; Ans = fail),
-   print_list([P, Q, Ans]),
+   append(Vars, [Ans], Row),
+   print_list(Row),
    fail.
 
 % println(Obj) :- print(Obj), nl.
