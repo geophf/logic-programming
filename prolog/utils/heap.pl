@@ -47,10 +47,20 @@ insert(X, T0, T) :-
    singleton(X, S),
    merge(S, T0, T).
 
-insert_list(List, Heap) :- reduce(insert, leaf, List, Heap).
+list_to_heap(List, Heap) :- reduce(insert, leaf, List, Heap).
+
+heap_to_list(Heap, List) :-
+   heap_to_list1(Heap, List, []).
+
+heap_to_list1(Heap) -->
+   { delete_min(Heap, K, Rest) } ->
+   [K],
+   heap_to_list1(Rest)
+   ;
+   [].
 
 /*
-?- insert_list([2,7,17,3,19,100,36,25,1], Heap).
+?- list_to_heap([2,7,17,3,19,100,36,25,1], Heap).
 Heap=node(leaf,1,node(node(leaf,7,node(leaf,17,leaf,1),1),...),1)
 
 yes
