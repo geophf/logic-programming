@@ -34,6 +34,10 @@ fst(Term, Frist) :-
 snd(Term, Secnod) :-
    Term =.. [_|[_|[Secnod|_]]].
 
+unpair(Term, Fst, Snd) :-  % ... logically-equivalent to fst &&& snd
+   Term =.. [_|[Fst|[Snd|_]]].
+   % ... but faster, because only one term-destruction ('destructuring,' smh).
+
 dup(X, X - X).
 
 /*
