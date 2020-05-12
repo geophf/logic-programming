@@ -38,3 +38,4 @@ note: the solutions provided here are implemented in Paul Tarau's
 * Working with Prolog lists p01 - p28
 * Arithmetic p31 - p41
 * Logic and Codes p46 - p50
+* Binary Trees p54 -
