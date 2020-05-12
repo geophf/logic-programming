@@ -43,11 +43,15 @@ Eh, programming is a work-in-progress, isn't it. Just like life.
 
 ## TODOs
 
+* Encode and decode documents using my [Huffman encoder](https://github.com/geophf/logic-programming/blob/master/prolog/p99/p50_huffman_code.pl)
 * REST access ... or maybe shift data in and out, a la RedShift?
 * Cypher/neo4j-bridge
 
 ## TODOnes
 
+* [AVL Trees](https://github.com/geophf/logic-programming/blob/master/prolog/utils/avl.pl) ... (you know: borrowed and modified).
+* [Heaps/Priority Queues](https://github.com/geophf/logic-programming/blob/master/prolog/utils/heap.pl) ... (again: borrowed).
+* [Huffman code](https://github.com/geophf/logic-programming/blob/master/prolog/p99/p50_huffman_code.pl) ... but see TODOs
 * [JSON parsing library](https://github.com/geophf/logic-programming/blob/master/prolog/utils/json.pl)
 
 > ... but now we need to add custom deserializers that iterate over each node.
