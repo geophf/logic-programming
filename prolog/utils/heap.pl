@@ -32,7 +32,7 @@ merge1(O, T1, T2, Heap) :-
 
 do_merge(T1, T2, Heap) :-
    T1 = node(L, K1, R, _),
-   % T2 = node(_, _, _, _), ... this structure is known from merge/3
+   % T2 = node(_, _, _, _), ... redundant: this structure is known from merge/3
    merge(R, T2, Merged),
    rank1(L, Rank_Left),
    rank1(R, Rank_Right),
@@ -49,9 +49,6 @@ insert(X, T0, T) :-
 
 insert_list(List, Heap) :- reduce(insert, leaf, List, Heap).
 
-get_min(node(_, K, _, _), K).
-delete_min(node(L, _, R, _), T) :- merge(L, R, T).
-
 /*
 ?- insert_list([2,7,17,3,19,100,36,25,1], Heap).
 Heap=node(leaf,1,node(node(leaf,7,node(leaf,17,leaf,1),1),...),1)
@@ -61,3 +58,5 @@ yes
 and ppt(Heap) shows the (tree) structure of the heap.
 */
 
+get_min(node(_, K, _, _), K).
+delete_min(node(L, K, R, _), K, T) :- merge(L, R, T).
