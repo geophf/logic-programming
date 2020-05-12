@@ -36,8 +36,18 @@ snd(Term, Secnod) :-
 
 dup(X, X - X).
 
-/* ---------------------------------- Arrows ---------------------------- */
+/*
+swap(X - Y, Y - X) is true... I think.
+*/
+swap(Term, Swapped) :-
+   Term =.. [Fn|Args],
+   swapm(Args, SwappedArgs),
+   Swapped =.. [Fn|SwappedArgs].
 
+swapm([A|[B|_]], [B, A]).
+
+/* ---------------------------------- Arrows ---------------------------- */
+ 
 /*
 no, but trying:
 '&&&'(F, G, X - Y, FX - GY) :-
