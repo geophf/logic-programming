@@ -67,6 +67,9 @@ reduce(Pred2, Accum, [H|T], Sum) :-
    call(Fn),
    reduce(Pred2, NewAccum, T, Sum).
 
+do(_, []).
+do(Pred, [H|T]) :- call(Pred,H), do(Pred, T).
+
 map(Pred, List, Mapped) :- map1(Pred, List, Mapped, []).
 
 map1(_, []) --> [].
