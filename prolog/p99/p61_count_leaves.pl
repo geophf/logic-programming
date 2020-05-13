@@ -10,7 +10,14 @@ them.
 /*
 First, we can just gather the leaves, then we just count them.
 
-You know: just.
+You know, just like this:
+
+P61A (*) Collect the leaves of a binary tree in a list
+
+A leaf is a node with no successors. Write a predicate leaves/2 to collect 
+them in a list.
+
+% leaves(T,S) :- S is the list of all leaves of the binary tree T
 */
 
 :- ['utils/cat'].
@@ -57,4 +64,3 @@ Len=13
 
 yes
 */
-
