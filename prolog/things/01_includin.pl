@@ -17,7 +17,7 @@ I'll put that into a good-ol' bag data structure, aka AVL-tree.
 :- ['utils/list'].
 :- ['utils/math'].
 
-:-initialization(main, main).
+:- initialization(main, main).
 
 main(Argv) :- char_count(Argv).
 
