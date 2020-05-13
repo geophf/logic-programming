@@ -55,6 +55,7 @@ Eh, programming is a work-in-progress, isn't it. Just like life.
 * [JSON parsing library](https://github.com/geophf/logic-programming/blob/master/prolog/utils/json.pl)
 
 > ... but now we need to add custom deserializers that iterate over each node.
+> ... (started reification from JSON to Prolog with [02_jsonin](https://github.com/geophf/logic-programming/blob/master/prolog/things/02_jsonin.pl))
 
 ## Further Reading
 
