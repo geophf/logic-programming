@@ -21,40 +21,27 @@ So to build a { block } iteratively we need a little category-magic.
 json(Obj) --> value(Obj).
 
 object(object(Empty)) -->
-   % { write('Okay, is this an empty object?'), nl },
    "{" , whitespace, "}",
-   % { write('Yes. Yes, it is.'), nl },
    { avl_empty(Empty) }.
 object(object(Obj)) -->
-   % { write('Let us fill an object with pairs...'), nl },
    "{", kv(Pair), commaedPairs(Pairs), "}",
-   % { write('Pairs... and kiwi fruit ... it is!'), nl },
    { list_to_avl([Pair|Pairs], Obj) }.
 
 commaedPairs([Pair|Pairs]) -->
-   % { write('Trying a pair'), nl },
    whitespace, ",", whitespace, kv(Pair),
-   % { write('got pair '), write(Pair), nl },
    commaedPairs(Pairs).
 commaedPairs([]) --> whitespace.
 
 kv(Key - Val) --> 
-   % { write('Hey, can I KV this?'), nl },
    whitespace, string(K), 
-   % { write('Got string '), write(K), nl },
    whitespace, ":", value(Val),
-   % { write('Got value '), write(Val), nl },
    { string(Key) = K }.
 
 array(array(Arr)) --> 
-   % { write('I am parsing an array') },
    "[", elements(Arr) , "]".
-   % { write(' ... and I parsed an array.'), nl }.
 
 elements([V|Vs]) -->
-   % { write('I am parsing an array value') },
    value(V),
-   % { write('... and I parsed an array value: '), write(V), nl },
    commaedValues(Vs).
 elements([]) --> whitespace.
 
@@ -64,10 +51,10 @@ commaedValues([]) --> whitespace.
 whitespace --> { white(W) }, [W], whitespace.
 whitespace --> [].
 
-white(32).
-white(10).
-white(13).
-white(9).
+white(32).   % SPACE
+white(10).   % CARRIAGE_RETURN
+white(13).   % LINE_FEED
+white(9).    % TAB
 
 /*
 ASCII character table at:
@@ -80,13 +67,10 @@ Also not/1 is an operator in bp prolog, but a predicate in SWI-Prolog
 */
 
 string(string(Str)) --> 
-   % { write('Is this a string?'), nl },
    """", 
-   % { write('I got the open quote'), nl },
    chars(Cs), 
    """", 
    { name(Str, Cs) }.
-     % write('String is '), write(Str) }.
 
 chars(Cs) --> 
    char(C1) -> chars(C1s), { Cs = [C1|C1s] }
@@ -96,7 +80,6 @@ char(C, [C|Cs], Cs) :-
    DOUBLE_QUOTE = 34,
    BACK_SLASH = 92,
    not(member(C, [DOUBLE_QUOTE, BACK_SLASH])).
-   % write('I got char '), print(C), nl.
 char(C) --> escaped(C).
 
 escaped(C) --> "\\", escaped_char(C).
