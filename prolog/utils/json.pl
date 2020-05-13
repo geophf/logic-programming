@@ -19,36 +19,50 @@ So to build a { block } iteratively we need a little category-magic.
 :- ['utils/avl'].
 
 json(Obj) --> value(Obj).
-% json(Arr) --> array(Arr).
 
 object(object(Empty)) -->
+   % { write('Okay, is this an empty object?'), nl },
    "{" , whitespace, "}",
+   % { write('Yes. Yes, it is.'), nl },
    { avl_empty(Empty) }.
 object(object(Obj)) -->
+   % { write('Let us fill an object with pairs...'), nl },
    "{", kv(Pair), commaedPairs(Pairs), "}",
+   % { write('Pairs... and kiwi fruit ... it is!'), nl },
    { list_to_avl([Pair|Pairs], Obj) }.
 
-commaedPairs([]) --> whitespace.
 commaedPairs([Pair|Pairs]) -->
+   % { write('Trying a pair'), nl },
    whitespace, ",", whitespace, kv(Pair),
+   % { write('got pair '), write(Pair), nl },
    commaedPairs(Pairs).
+commaedPairs([]) --> whitespace.
 
 kv(Key - Val) --> 
-   whitespace, string(K), whitespace, ":", value(Val),
+   % { write('Hey, can I KV this?'), nl },
+   whitespace, string(K), 
+   % { write('Got string '), write(K), nl },
+   whitespace, ":", value(Val),
+   % { write('Got value '), write(Val), nl },
    { string(Key) = K }.
 
-array(array(Arr)) --> "[", elements(Arr) , "]".
+array(array(Arr)) --> 
+   % { write('I am parsing an array') },
+   "[", elements(Arr) , "]".
+   % { write(' ... and I parsed an array.'), nl }.
 
-elements([]) --> whitespace.
 elements([V|Vs]) -->
+   % { write('I am parsing an array value') },
    value(V),
+   % { write('... and I parsed an array value: '), write(V), nl },
    commaedValues(Vs).
+elements([]) --> whitespace.
 
 commaedValues([V|Vs]) --> ",", value(V), commaedValues(Vs).
 commaedValues([]) --> whitespace.
 
-whitespace --> [].
 whitespace --> { white(W) }, [W], whitespace.
+whitespace --> [].
 
 white(32).
 white(10).
@@ -59,10 +73,18 @@ white(9).
 ASCII character table at:
 
 http://www.asciitable.com/
+
+But: SHOOT! SWI-Prolog treats '\' as an escaper, bp prolog does not.
+
+Also not/1 is an operator in bp prolog, but a predicate in SWI-Prolog
 */
 
 string(string(Str)) --> 
-   """", chars(Cs), """", 
+   % { write('Is this a string?'), nl },
+   """", 
+   % { write('I got the open quote'), nl },
+   chars(Cs), 
+   """", 
    { name(Str, Cs) }.
      % write('String is '), write(Str) }.
 
@@ -70,14 +92,17 @@ chars(Cs) -->
    char(C1) -> chars(C1s), { Cs = [C1|C1s] }
              ; { Cs = [] }.
 
-char(C) --> escaped(C).
 char(C, [C|Cs], Cs) :-
-   not member(C, "\""").
+   DOUBLE_QUOTE = 34,
+   BACK_SLASH = 92,
+   not(member(C, [DOUBLE_QUOTE, BACK_SLASH])).
+   % write('I got char '), print(C), nl.
+char(C) --> escaped(C).
 
-escaped(C) --> "\", escaped_char(C).
+escaped(C) --> "\\", escaped_char(C).
 
 escaped_char(34) --> """".
-escaped_char(92) --> "\".
+escaped_char(92) --> "\\".
 escaped_char(47) --> "/".
 escaped_char(8) --> "b".
 escaped_char(12) --> "f".
@@ -183,7 +208,10 @@ Reference JSON is:
 */
 
 bowling(Scores) :-
-   Atom = '{ "bowling scores" : { "Siggi" : [56, 63], "Jada" : [97], "Walt": [250] } }',
+   Atom = '{ "bowling scores" : 
+             { "Siggi" : [56, 63], 
+               "Jada" : [97], 
+               "Walt": [250] } }',
    name(Atom, Scores).
 
 /*
@@ -198,4 +226,3 @@ JSON=object(t('bowling scores',
                        t('Jada',array([number(97)]),t,t,1),
                        t('Walt',array([number(250)]),t,t,1),2)),t,t,1)).
 */
-
