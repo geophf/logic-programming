@@ -15,7 +15,8 @@ structure it as prolog terms.
 
 The SPARQL that generated this JSON is:
 
-SELECT DISTINCT ?item ?itemLabel ?genre ?genreLabel WHERE {
+SELECT DISTINCT ?item ?itemLabel ?genre ?genreLabel 
+                (year(xsd:dateTime(?pubdate)) as ?year) WHERE {
   ?item wdt:P31 wd:Q11424.
   ?item wdt:P577 ?pubdate.
   ?item wdt:P495 wd:Q30.
@@ -24,7 +25,7 @@ SELECT DISTINCT ?item ?itemLabel ?genre ?genreLabel WHERE {
   FILTER((?pubdate >= "2020-01-01T00:00:00Z"^^xsd:dateTime) 
       && (?pubdate <= "2020-12-31T00:00:00Z"^^xsd:dateTime))
   SERVICE wikibase:label { 
-    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".
+      bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". 
   }
 }
 
@@ -63,7 +64,7 @@ json_this_baybee(JSON) :-
    write(Obj), nl,
    % ppt(Obj),
    json_to_terms(Obj, Terms),
-   do(writln, Terms), nl,
+   do(write_term, Terms), nl,
    length(Terms, Len),
    do(writsp, ['Processed', Len, films]), nl, nl.
 
@@ -132,14 +133,16 @@ That's a nice start.
 
 json_to_terms(array(List), Terms) :-
    map(json_to_terms, List, Terms).
-json_to_terms(object(AVL), movie(title(Title), genre(Genre))) :-
+json_to_terms(object(AVL), movie(title(Title), genre(Genre), published(Year))) :-
    avl_get(AVL, itemLabel, string(Title)),
-   avl_get(AVL, genreLabel, string(Genre)).
+   avl_get(AVL, genreLabel, string(Genre)),
+   avl_get(AVL, year, string(Year)).
 
-writln(T) :- write(T), nl.
+write_term(T) :- print(T), stop.
 writsp(T) :- write(T), sp.
 
 sp :- write(' ').
+stop :- write('.'), nl.
 
 /*
 ... and BOOM! Did that:
@@ -156,4 +159,21 @@ movie(title(Feels Good Man),genre(documentary film))
 movie(title(Miss Juneteenth),genre(drama film))
 
 Processed 431 films 
+
+Note that these terms are not very Prolog-y, meaning: I can't consult a file
+containing these facts (the atoms must be quoted first).
+
+By changing write/1 to print/1, I get prolog-y terms:
+
+movie(title('The 40-Year-Old Version'),genre('comedy film'),published(2020)).
+movie(title('Dinner in America'),genre('comedy-drama'),published(2020)).
+movie(title('I Am Fear'),genre('thriller film'),published(2020)).
+
+... but it's not a panacea:
+
+movie(title(1917),genre('war film'),published(2020)).
+
+... but it'll do for the present.
+
+... also (') needs to be escaped, oh, well.
 */
