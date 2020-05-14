@@ -65,3 +65,39 @@ Leafs = 43
 ... which is 97. YES!
 */
 
+/* ------------------------------------------------------- 62B (or not 2B) ----
+
+P62B (*) Collect the nodes at a given level in a list
+A node of a binary tree is at level N if the path from the root to the node 
+has length N-1. The root node is at level 1. Write a predicate atlevel/3 to 
+collect all nodes at a given level in a list.
+
+% atlevel(T,L,S) :- S is the list of nodes of the binary tree T at level L
+
+Using atlevel/3 it is easy to construct a predicate levelorder/2 which creates 
+the level-order sequence of the nodes. However, there are more efficient ways 
+to do that.
+*/
+
+atlevel(Tree, Level, Nodes) :- atlevel1(Tree, Level, Nodes, []).
+
+atlevel1(t, _) --> [].
+atlevel1(t(K, V, _, _, _), 1) --> [K-V].
+atlevel1(t(_, _, L, R, _), N) -->
+   { N > 1,
+     pred(N, M) },
+   atlevel1(L, M),
+   atlevel1(R, M).
+
+/*
+?- movie_tree(t(K, _, _, _, Depth)).
+K = genre('horror film'),
+Depth=8
+
+?- movie_tree(Movies), atlevel(Movies, 5, Collect), length(Collect, Len).
+Movies=t(genre('horror film'),[movie(title('Girl on the Third Floor'), ...])).
+Collect=[genre('LGBT-related film')-[movie(title('Trapped: The Alex Cooper...
+Len=16
+
+yes
+*/
