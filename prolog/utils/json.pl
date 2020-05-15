@@ -235,14 +235,10 @@ Translators = [xform(Key1, f11(X), f21(X)), ... xform(KeyN, f1n(X), f2n(X))]
 
 json_to_term(Functor, Translators, object(AVL), Term) :-
    copy_term(Translators, Ts),
-   do(json_translate(AVL), Ts),
-   map(bs, Ts, Args),
+   map(json_translate(AVL), Ts, Args),
    Term =.. [Functor|Args].
 
-bs(xform(_, _, B), B).
-
-json_translate(AVL, X) :-
-   X = xform(Key, A, _B),
+json_translate(AVL, xform(Key, A, B), B) :-
    avl_get(AVL, Key, A).
 
 /* e.g.:
@@ -258,10 +254,7 @@ json_translate(AVL, X) :-
 
 AVL=t(itemLabel,string('Ghost Busters'),t(genre,string('comedy film'),...))
 Fn=movie,
-Translators=[xform(itemLabel,string('Ghost Busters'),title('Ghost Busters')),...
-T='Ghost Busters',
-Y=2019,
-G='comedy film',
+Translators = [xform(itemLabel, string(T), title(T)), ...]
 Ans=movie(title('Ghost Busters'),published(2019),genre('comedy film'))
 
 yes
