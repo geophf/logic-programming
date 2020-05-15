@@ -44,6 +44,7 @@ things/movies.json has 431 movies; things/movies-smol.json has 4 films.
 things/movies-smol.json is also inlined here as sample_json/1.
 */
 
+:- ['utils/io'].
 :- ['utils/list'].
 :- ['utils/json'].
 :- ['library/tree'].
@@ -58,40 +59,32 @@ main([JSON|_]) :-
    json_this_baybee(Jason).
 
 json_this_baybee(JSON) :-
-   % write('JSONin the JSON.'), nl, write(JSON), nl,
    json(Obj, JSON, _),
    write('And the winner is...'), nl, nl,
    write(Obj), nl,
-   % ppt(Obj),
    json_to_terms(Obj, Terms),
    do(write_term, Terms), nl,
    length(Terms, Len),
    do(writsp, ['Processed', Len, films]), nl, nl.
 
-/*
-   (X = [] -> write('The end.')
-   ;
-   write('And the remainder is...'), nl, nl,
-   name(Rest, X),
-   write(Rest), nl, nl,
-   write('Q.E.D.')),
-   nl, nl.
-*/
-
 sample_json('[{"item":"http://www.wikidata.org/entity/Q22674122",
   "itemLabel":"Duck Duck Goose",
+  "year":"2020",
   "genre":"http://www.wikidata.org/entity/Q157443",
   "genreLabel":"comedy film"},
  {"item":"http://www.wikidata.org/entity/Q12302227",
   "itemLabel":"Artemis Fowl",
+  "year":"2020",
   "genre":"http://www.wikidata.org/entity/Q319221",
   "genreLabel":"adventure film"},
  {"item":"http://www.wikidata.org/entity/Q29021224",
   "itemLabel":"Bad Boys for Life",
+  "year":"2020",
   "genre":"http://www.wikidata.org/entity/Q959790",
   "genreLabel":"crime film"},
  {"item":"http://www.wikidata.org/entity/Q28912376",
   "itemLabel":"The New Mutants",
+  "year":"2020",
   "genre":"http://www.wikidata.org/entity/Q188473",
   "genreLabel":"action film"}]').
 
@@ -132,17 +125,11 @@ That's a nice start.
 */
 
 json_to_terms(array(List), Terms) :-
-   map(json_to_terms, List, Terms).
-json_to_terms(object(AVL), movie(title(Title), genre(Genre), published(Year))) :-
-   avl_get(AVL, itemLabel, string(Title)),
-   avl_get(AVL, genreLabel, string(Genre)),
-   avl_get(AVL, year, string(Year)).
-
-write_term(T) :- print(T), stop.
-writsp(T) :- write(T), sp.
-
-sp :- write(' ').
-stop :- write('.'), nl.
+   Fn = movie,  % (title(T), genre(G), published(Year)),
+   Translators = [xform(itemLabel, string(T), title(T)),
+                  xform(genreLabel, string(G), genre(G)),
+                  xform(year, string(Year), published(Year))],
+   map(json_to_term(Fn, Translators), List, Terms).
 
 /*
 ... and BOOM! Did that:

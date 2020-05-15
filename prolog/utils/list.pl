@@ -74,9 +74,7 @@ map(Pred, List, Mapped) :- map1(Pred, List, Mapped, []).
 
 map1(_, []) --> [].
 map1(Pred, [H|T]) -->
-   { apply(Pred, H, F0),
-     apply(F0, X, Fn),
-     call(Fn) },
+   { call(Pred, H, X) },
    [X],
    map1(Pred, T).
 

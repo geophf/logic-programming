@@ -209,3 +209,60 @@ JSON=object(t('bowling scores',
                        t('Jada',array([number(97)]),t,t,1),
                        t('Walt',array([number(250)]),t,t,1),2)),t,t,1)).
 */
+
+/*
+json_to_term/2.
+
+So, here's a stab at tranlating JSON to prolog terms where the JSON is of
+the dictionary-form.
+
+Functor = fn(t1(V1), ... tn(Vn))
+Translators = [Key1 - j1(V1), ... KeyN - jn(Vn)]
+
+... or, whatever. You get the idea, right?
+
+json_to_term(Functor, Translators, object(AVL)) :-
+   do(json_translation(AVL, Functor), Translators).
+
+json_translation(AVL, _Functor, Key - Matcher) :-
+   avl_get(AVL, Key, Matcher).
+
+Ugh. That didn't work. :( I guess I have to do a construction from a mapping.
+
+Functor = some f
+Translators = [xform(Key1, f11(X), f21(X)), ... xform(KeyN, f1n(X), f2n(X))]
+*/
+
+json_to_term(Functor, Translators, object(AVL), Term) :-
+   copy_term(Translators, Ts),
+   do(json_translate(AVL), Ts),
+   map(bs, Ts, Args),
+   Term =.. [Functor|Args].
+
+bs(xform(_, _, B), B).
+
+json_translate(AVL, X) :-
+   X = xform(Key, A, _B),
+   avl_get(AVL, Key, A).
+
+/* e.g.:
+
+?- list_to_avl([itemLabel - string('Ghost Busters'), 
+                year - string(2019), 
+                genreLabel - string('comedy film')], AVL),
+   Fn = movie,
+   Translators = [xform(itemLabel, string(T), title(T)), 
+                  xform(year, string(Y), published(Y)), 
+                  xform(genreLabel, string(G), genre(G))],
+   json_to_term(Fn, Translators, object(AVL), Ans).
+
+AVL=t(itemLabel,string('Ghost Busters'),t(genre,string('comedy film'),...))
+Fn=movie,
+Translators=[xform(itemLabel,string('Ghost Busters'),title('Ghost Busters')),...
+T='Ghost Busters',
+Y=2019,
+G='comedy film',
+Ans=movie(title('Ghost Busters'),published(2019),genre('comedy film'))
+
+yes
+*/
