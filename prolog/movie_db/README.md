@@ -71,3 +71,10 @@ The movie JSON files are megabytes. Of course, git compresses the files it store
 compress/decompress/recompress/phicompress these files?
 
 Hm.
+
+## Three-body problem?
+
+Or as the French say: «menage au trois corpus problème.»
+
+We have the actors and the directors now. So: Six degrees of separation from
+Kevin Bacon, right? (or whomst'd'ever.) We can do that!
