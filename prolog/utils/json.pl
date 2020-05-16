@@ -13,6 +13,9 @@ Args=a:b,c:d,
 A=a:b
 
 So to build a { block } iteratively we need a little category-magic.
+
+... but actually json_to_term/4 is more in line with a JSON-to-prolog-term
+translation.
 */
 
 :- ['utils/list'].
