@@ -20,3 +20,11 @@ read_sommat_from_dis_heahe_file_n_stupfen :-
 
 yo.
 foo.
+
+/*
+This problem came up because I can't process the movie_genres straight off,
+but, mayhap, another approach would be to break the genre files up by year, and
+then process each one of those.
+
+Let's try that first before we go all file-y/socket-y crazy here, yes?
+*/
