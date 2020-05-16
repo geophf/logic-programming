@@ -87,4 +87,5 @@ Kevin Bacon, right? (or whomst'd'ever.) We can do that!
   2. movie_starring
   3. movie_director
 
-
+[02_jsonin](https://github.com/geophf/logic-programming/blob/master/prolog/things/02_jsonin.pl)
+is a sketch that translates JSON to prolog terms.
