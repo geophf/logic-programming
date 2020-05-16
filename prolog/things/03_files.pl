@@ -28,3 +28,17 @@ then process each one of those.
 
 Let's try that first before we go all file-y/socket-y crazy here, yes?
 */
+
+% ...
+
+/*
+But to extract movies-by-year, we need to PROCESS movies-by-year, and wouldn't
+that all be better if it were some part of automated process
+
+generate_year -> build SPARQL -> query wikidata endpoint -> process films
+
+... and in that case we have a multi-file fact-table to concern ourselves
+with, now, don't we.
+
+So ... hm. More thought required.
+*/
