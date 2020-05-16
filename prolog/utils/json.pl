@@ -162,11 +162,16 @@ whole(number(D)) -->
 
 digits(Ds, [C|Cs], Es) :-
    digit(C, D) -> digits(D1s, Cs, Es), Ds = [D|D1s] ; Es = [C|Cs], Ds = [].
+digits([], [], []).
 
 fractional(fraction(F)) -->
    ".",
    digits(Ds),
-   { reduce(muladd(0.1), 0, Ds, F) }.
+   { reverse(Ds, Rs),
+     reduce(addmul(0.1), 0, Rs, F) }.
+
+addmul(Mult, H, Sum, Ans) :-
+   Ans is Mult * (H + Sum).
 
 exponent(exponent(E), [C|Cs], Es) :-
    member(C, "eE"),
@@ -244,16 +249,24 @@ json_to_term(Functor, Translators, object(AVL), Term) :-
 json_translate(AVL, xform(Key, A, B), B) :-
    avl_get(AVL, Key, A).
 
-/* e.g.:
+% A helper predicate to build translators:
+
+translate(Label - Functor, xform(Label, string(T), Fn)) :-
+   Fn =.. [Functor, T].
+
+/*
+used like this:
+
+translators(Ts) :-
+   map(xlate, [itemLabel - title, genreLabel - genre, year - published], Ts).
+
+in:
 
 ?- list_to_avl([itemLabel - string('Ghost Busters'), 
                 year - string(2019), 
                 genreLabel - string('comedy film')], AVL),
-   Fn = movie,
-   Translators = [xform(itemLabel, string(T), title(T)), 
-                  xform(year, string(Y), published(Y)), 
-                  xform(genreLabel, string(G), genre(G))],
-   json_to_term(Fn, Translators, object(AVL), Ans).
+   translators(Translators),
+   json_to_term(movie, Translators, object(AVL), Ans).
 
 AVL=t(itemLabel,string('Ghost Busters'),t(genre,string('comedy film'),...))
 Fn=movie,
@@ -261,4 +274,41 @@ Translators = [xform(itemLabel, string(T), title(T)), ...]
 Ans=movie(title('Ghost Busters'),published(2019),genre('comedy film'))
 
 yes
+
+The translate/2 function assumes the value is a string/1 for now.
+
+Another example:
+
+?- name('[{"entree" : "Connecticut Lobster Roll",
+           "price": 16.95 },
+          {"side" : "Lobster mac and cheeze",
+           "price":  5.95 }]', JSON),
+   json(array([E, S]), JSON, []),
+   PriceXform = xform(price, number(N), price(N)),
+   translate(entree-item, EntreeXform),
+   json_to_term(entree, [EntreeXform, PriceXform], E, E1),
+   translate(side-item, SideXform),
+   json_to_term(side, [SideXform, PriceXform], S, S1).
+
+JSON = [91, 123, 34, 101, 110, 116, 114, 101, 101|...],
+E = object(t(entree, string('Connecticut Lobster Roll'), t, ...))
+S = object(t(side, string('Lobster mac and cheeze'), ...))
+PriceXform = xform(price, number(N), price(N)),
+EntreeXform = xform(entree, string(_22408), entree(_22408)),
+E1 = entree(item('Connecticut Lobster Roll'), price(21.9)),
+SideXform = xform(side, string(_22510), side(_22510)),
+S1 = side(item('Lobster mac and cheeze'), price(10.9)) 
+
+yes
+n.b.: Since we have copy_term/2 in json_to_term/4, we can use PriceXform twice.
+
+... oops! Found a bug with numbers! ... fixed number/3 ... REEEEEEE! and answer
+is now:
+
+... blah, blah, blah, ...
+
+E1=entree(item('Connecticut Lobster Roll'),price(16.95)),
+S1=side(item('Lobster mac and cheeze'),price(5.95))
+
+WOOT!
 */
