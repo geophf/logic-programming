@@ -38,6 +38,7 @@ note: the solutions provided here are implemented in Paul Tarau's
 * Working with Prolog lists p01 - p28
 * Arithmetic p31 - p41
 * Logic and Codes p46 - p50
-* Binary Trees p54 -
-  (problems p58-p61 I consider answered by [utils/avl](https://github.com/geophf/logic-programming/blob/master/prolog/utils/avl.pl))
+* Binary Trees p54 - p69
+> (problems p58-p61 I consider answered by [utils/avl](https://github.com/geophf/logic-programming/blob/master/prolog/utils/avl.pl))
+* Multiway Trees p70 - 
 
