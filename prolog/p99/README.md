@@ -35,10 +35,56 @@ note: the solutions provided here are implemented in Paul Tarau's
 
 ## Sections
 
-* Working with Prolog lists p01 - p28
-* Arithmetic p31 - p41
-* Logic and Codes p46 - p50
-* Binary Trees p54 - p69
-> (problems p58-p61 I consider answered by [utils/avl](https://github.com/geophf/logic-programming/blob/master/prolog/utils/avl.pl))
-* Multiway Trees p70 - 
+### Working with Prolog lists p01 - p28
 
+A list is either empty or it is composed of a first element (head) and a tail, 
+which is a list itself. In Prolog we represent the empty list by the atom `[]`
+and a non-empty list by a term `[H|T]` where `H` denotes the head and `T` 
+denotes the tail.
+
+### Arithmetic p31 - p41
+
+### Logic and Codes p46 - p50
+
+### Binary Trees p54 - p69
+> (problems p58-p61 I consider answered by [utils/avl](https://github.com/geophf/logic-programming/blob/master/prolog/utils/avl.pl))
+
+A binary tree is either empty or it is composed of a root element and two 
+successors, which are binary trees themselves.
+
+In Prolog we represent the empty tree by the atom 'nil' and the non-empty tree 
+by the term t(X,L,R), where X denotes the root node and L and R denote the left 
+and right subtree, respectively. The example tree depicted opposite is 
+therefore represented by the following Prolog term:
+
+```
+        (a)
+       /   \
+    (b)     (c)
+   /   \       \
+(d)     (e)     (f)
+               /
+            (g)
+```
+
+`T1 = t(a,t(b,t(d,nil,nil),t(e,nil,nil)),t(c,nil,t(f,t(g,nil,nil),nil)))`
+
+Other examples are a binary tree that consists of a root node only:
+
+`T2 = t(a,nil,nil)` or an empty binary tree: `T3 = nil`
+
+You can check your predicates using these example trees. They are given as 
+test cases in p54.
+
+### Multiway Trees p70 - 
+
+A multiway tree is composed of a root element and a (possibly empty) set of 
+successors which are multiway trees themselves. A multiway tree is never 
+empty. The set of successor trees is sometimes called a forest.
+
+In Prolog we represent a multiway tree by a term t(X,F), where X denotes the 
+root node and F denotes the forest of successor trees (a Prolog list). The 
+example tree depicted opposite is therefore represented by the following 
+Prolog term:
+
+`T = t(a,[t(f,[t(g,[])]),t(c,[]),t(b,[t(d,[]),t(e,[])])])`
