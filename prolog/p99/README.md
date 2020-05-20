@@ -52,9 +52,9 @@ denotes the tail.
 A binary tree is either empty or it is composed of a root element and two 
 successors, which are binary trees themselves.
 
-In Prolog we represent the empty tree by the atom 'nil' and the non-empty tree 
-by the term t(X,L,R), where X denotes the root node and L and R denote the left 
-and right subtree, respectively. The example tree depicted opposite is 
+In Prolog we represent the empty tree by the atom `nil` and the non-empty tree 
+by the term `t(X,L,R)`, where `X` denotes the root node and `L` and `R` denote 
+the left and right subtree, respectively. The example tree depicted opposite is 
 therefore represented by the following Prolog term:
 
 ```
