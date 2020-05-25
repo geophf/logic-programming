@@ -207,3 +207,17 @@ and arity 2, together with the corresponding node.
 The notation for labelled graphs can also be used for so-called 
 **multi-graphs**, where more than one edge (or arc) are allowed between two 
 given nodes.
+
+### Graph Databases
+
+![NY Times article titles and topics](imgs/nyt-article-topic-graph.png)
+
+This begs the question for me: certainly, we can represent graph data, and 
+perform analytics on those data entirely in Prolog. But why not use a graph
+database, e.g.: [neo4j](https://neo4j.com/)?
+
+This being the case, we can do all the above problems by translating Prolog
+terms to a graph representation (Cypher), uploading those data sets to the
+graph database, then read the results from the graph database REST endpoint.
+
+*Whew!* That'll be something!
