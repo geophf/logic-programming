@@ -13,9 +13,11 @@ we go down, then, breath-first 'up,' as it were, from the leaves back.
 Sounds rather heap-ish.
 */
 
+:- ['utils/cat'].
+:- ['utils/avl'].
 :- ['utils/heap'].
 :- ['utils/math'].
-:- ['library/ppt'].
+:- ['library/tree'].
 
 /* leaves/2 are of the form [D - Val|...]
    where D is the depth of the leaf and Val is its value.
@@ -73,4 +75,59 @@ Hm. A bit further study is required here.
 can't do that elsewhere, but, hey! we'll burn that bridge after we cross it. ;)
 */
 
-bottom_up(Tree, Seq) :- true.   % place-holder until we work our magic.
+/* tiered/2 de-heaps the heap as an tiered AVL tree of AVL trees (no dups) */
+
+tiered(Heap, AVL) :-
+   heap_to_list(Heap, Lists),
+   flatten(Lists, List),
+   reduce(insert_at, t, List, AVL).
+
+put_in_avl(Val, T0, T1) :- avl_replace(T0, Val, T1).
+
+insert_at(Tier - Val, A0, AVL) :-
+   avl_put(t, Val, Fresh),
+   avl_alter_f(A0, Tier, Fresh, put_in_avl(Val), AVL).
+
+/*
+tiered1(leaf) --> nupe.
+tiered1(Heap) -->
+   { delete_min(Heap, [Depth - Val|Trail], Hop),
+     (Trail = [_|_] -> insert(Trail, Hop, Hoop) ; Hoop = Hop) },
+   insert_at(Depth, Val),
+   tiered1(Hoop).
+
+eh, now that I have nodes-with-depth in the heap, I can just heap_to_list/2
+and insert them all, pel mel, letting the tiering of the AVL tree maintain
+proper ordering.
+*/
+
+/* With tiered/2 we have an tiered-AVL of AVLs, so we snarf in reverse order */
+
+bottom_up(Tree, Seq) :-
+   leaves(Tree, Leaves),
+   tiered(Leaves, Tiers),
+   avl_to_list(Tiers, List),
+   reverse(List, Reved),
+   map(sndkeys, Reved, Vals),
+   flatten(Vals, Seq).
+
+sndkeys(_ - AVL, List) :-
+   avl_to_list(AVL, KVs),
+   map(fst, KVs, List).
+
+/*
+?- Tree=t(a,[t(b,[t(e,[]),t(d,[])]),t(c,[]),t(f,[t(g,[])])]),
+   bottom_up(Tree, Seq).
+Tree=t(a,[t(b,[t(e,[]),t(d,[])]),t(c,[]),t(f,[t(g,[])])]),
+Seq=[d,e,g,b,c,f,a]
+
+yes
+
+Well, well, well! There you have it.
+
+Or as the Latinists say:
+
+Q.E.D.
+
+... but heaps, AVL trees, and sndkeys/2 for a 1-* problem? Really? smh
+*/
