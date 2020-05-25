@@ -130,4 +130,9 @@ Or as the Latinists say:
 Q.E.D.
 
 ... but heaps, AVL trees, and sndkeys/2 for a 1-* problem? Really? smh
+
+Although, reviewing the code, the heap becomes redundant now, as we no longer
+care in which order the leave-sets are insert into the AVL tree (as it takes
+care of ordering with tiers-as-keys). We can remove the heaping and simply
+use a list of lists as store.
 */
