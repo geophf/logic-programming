@@ -130,6 +130,7 @@ zip_with1(Fn, [A|As], [B|Bs]) -->
 delete(H, [H|T], T).
 delete(P, [H|T], [H|L]) :-
    delete(P, T, L).
+delete(_, [], []).   % the "element isn't here" is the don't-care case.
 
 /* 
 pickN(X, Picked, Domain, Range) is deleteList for ground Picked and free Range
