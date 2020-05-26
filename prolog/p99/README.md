@@ -221,3 +221,14 @@ terms to a graph representation (Cypher), uploading those data sets to the
 graph database, then read the results from the graph database REST endpoint.
 
 *Whew!* That'll be something!
+
+* The article 
+[http_json.pl](https://eu.swi-prolog.org/pldoc/doc/_SWI_/library/http/http_json.pl)
+may be an insight into querying a JSON endpoint... *WITH JSON!*
+* Also see
+[http_open.pl](https://eu.swi-prolog.org/pldoc/doc_for?object=http_open%3Ahttp_open/3)
+for connecting to a REST endpoint with username/password and POSTing data.
+* Also there is a CSV endpoint and SPARQL endpoint reader in `data_source/2`
+available at ... well, I don't know where the documentation is for this!
+
+The story thus far is chronicled in [things/](https://github.com/geophf/logic-programming/tree/master/prolog/things).
