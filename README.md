@@ -55,7 +55,7 @@ Eh, programming is a work-in-progress, isn't it. Just like life.
 
 > ... but now we need to add custom deserializers that iterate over each node.
 > ... (started reification from JSON to Prolog with [02_jsonin](https://github.com/geophf/logic-programming/blob/master/prolog/things/02_jsonin.pl))
-* REST access and (Cypher/neo4j-bridge](https://github.com/geophf/logic-programming/blob/master/prolog/things/04_REST_endpoint.pl)
+* REST access and [Cypher/neo4j-bridge](https://github.com/geophf/logic-programming/blob/master/prolog/things/04_REST_endpoint.pl)
 > ... and we also have a neo4j-on-the-cloud prolog graph store! YUS! 
 
 ## Further Reading
