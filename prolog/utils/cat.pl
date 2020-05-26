@@ -28,6 +28,8 @@ apply(CurriedFn, Arg, FnArg) :-
 
 /* ---------------------------------- tuples ----------------------------- */
 
+tup(Fst, Snd, Fst - Snd).
+
 fst(Term, Frist) :-
    Term =.. [_|[Frist|_]].
 
