@@ -71,4 +71,8 @@ topic(name('old-dominion'),depth(3))
 topic(name(football),depth(4))
 
 BOOM!
+
+Now, ... SOME of this functionality (like converting to JSON-"statements", 
+transacting the endpoint, and decoding down to the row-data and meta data) 
+... MIGHT be uSEfUl as a neo4j library. We shall see.
 */
