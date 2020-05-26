@@ -108,6 +108,21 @@ partition1(Fn, [H|T], AnsLs, Ls, AnsRs, Rs) :-
    (call(Pred) -> NewLs = [H|Ls], NewRs = Rs; NewLs = Ls, NewRs = [H|Rs]),
    partition1(Fn, T, AnsLs, NewLs, AnsRs, NewRs).
 
+/* zip/3 zips two lists together, tupling the pairs */
+
+zip(As, Bs, Cs) :- zip_with(tup, As, Bs, Cs).
+
+/* zip_with/4 tells us how to zip two lists together (e.g. (+) adds pairs) */
+
+zip_with(Fn, As, Bs, Cs) :- zip_with1(Fn, As, Bs, Cs, []).
+
+zip_with1(_, [], _) --> [].
+zip_with1(_, _, []) --> [].
+zip_with1(Fn, [A|As], [B|Bs]) -->
+   { call(Fn, A, B, C) },
+   [C],
+   zip_with1(Fn, As, Bs).
+
 /* ... and some combinatorics */
 
 /* pick(s) are (re)written in DCG-friendly-style */
