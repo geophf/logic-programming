@@ -202,3 +202,12 @@ yes
 
 TADA! And that's the all ways conversions for the simple graph forms.
 */
+
+/*
+BONUS!
+
+Model the above graph, and address the above questions, exporting the graph
+to neo4j. Download the answers into Prolog.
+
+TBD
+*/
