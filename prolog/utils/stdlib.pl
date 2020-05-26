@@ -6,3 +6,4 @@
 :- ['utils/avl'].
 :- ['utils/io'].
 :- ['utils/json'].
+:- ['utils/graph'].
