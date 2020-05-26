@@ -202,7 +202,7 @@ Notice how the edge information has been packed into a term with functor '`/`'
 and arity 2, together with the corresponding node.
 
 *Human-friendly form*
-*[p>q/9, m>q/7, k, p>m/5]*
+`[p>q/9, m>q/7, k, p>m/5]`
 
 The notation for labelled graphs can also be used for so-called 
 **multi-graphs**, where more than one edge (or arc) are allowed between two 
