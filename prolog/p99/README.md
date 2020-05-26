@@ -231,4 +231,4 @@ for connecting to a REST endpoint with username/password and POSTing data.
 * Also there is a CSV endpoint and SPARQL endpoint reader in `data_source/2`
 available at ... well, I don't know where the documentation is for this!
 
-The story thus far is chronicled in [things/](https://github.com/geophf/logic-programming/tree/master/prolog/things).
+The story thus far is chronicled in [things/04_REST_endpoint.pl](https://github.com/geophf/logic-programming/blob/master/prolog/things/04_REST_endpoint.pl).
