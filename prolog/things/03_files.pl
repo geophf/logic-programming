@@ -42,3 +42,10 @@ with, now, don't we.
 
 So ... hm. More thought required.
 */
+
+/*
+There is also a SPARQL-querier call :- data_source(URL, sparql(Query)), but
+I don't see the documentation for this declaration, other than the example at:
+
+https://swish.swi-prolog.org/example/data_source_sparql.swinb
+*/
