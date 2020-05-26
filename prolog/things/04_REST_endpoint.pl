@@ -27,13 +27,10 @@ $ swipl -o qit -c things/04_REST_endpoint.pl
 :- ['utils/avl'].
 
 main([URL, User, Pass]) :-
-   % transaction(URL, Endpoint),
+   % transaction(URL, Endpoint),  % don't know why this is failing, but it is... :/
    Endpoint = URL,
    Query = "MATCH (n) RETURN n LIMIT 5",
-   % prolog_to_json(query(Query), Qur),
-   % write('Query is '), print(Qur), nl,
    prolog_to_json(cypher([query(Query)]), JSON),
-   % write('JSON it '), print(JSON), nl,
    json_it(Endpoint, JSON, User, Pass).
 
 main(_) :-
@@ -42,39 +39,21 @@ main(_) :-
 
 json_it(Endpoint, JSON, User, Pass) :-
    http_post(Endpoint, json(JSON), Atom, [authorization(basic(User, Pass))]),
-   % write('Results '), print(Atom), nl, % we get back an atom
    name(Atom, Str),
    json(object(Obj), Str, []),
-   % write('Tree is '), print(Obj), nl,
    avl_get(Obj, results, array([object(Res)])),
-   % write('Res is '), print(Res), nl,
    avl_get(Res, data, array(Rows)), % rows are composed of row and meta
-   % write('Rows is '), print(Rows), nl,
    do(process_row, Rows).
-
-/*
-   Results = json([results=[json([columns=_Col,data=Data])], errors=Errs]),
-   write('I got:'), nl, nl,
-   do(process_datum, Data), nl, nl,
-   write('Errors were: '), write(Errs), nl.
- */
 
 transaction(URL, Xact) :-
    name(URL, DB),
    append(DB, "/transaction/commit", BD),
    name(Xact, BD).
 
-process_datum(json([row=[Json], meta=_])) :-
-   print(Json), nl.
-process_datum(Huh) :-
-   write('... and I got this??? '), print(Huh), nl.
-
 process_row(object(Row)) :-
    avl_get(Row, row, array([Item])),
-   % write('I got item '), print(Item), nl,
    DepthXform = xform(depth, number(X), depth(X)),
    translate(name-name, NameXform),
-   % write(translated-name), print(NameXform), nl,
    json_to_term(topic, [NameXform, DepthXform], Item, Topic),
    print(Topic), nl.
 process_row(object(Row)) :-
