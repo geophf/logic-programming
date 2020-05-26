@@ -44,7 +44,7 @@ Eh, programming is a work-in-progress, isn't it. Just like life.
 ## TODOs
 
 * Encode and decode documents using my [Huffman encoder](https://github.com/geophf/logic-programming/blob/master/prolog/p99/p50_huffman_code.pl)
-* REST access *(done)* ... or maybe shift data in and out, a la RedShift?
+* REST access *(done)* ... or maybe shift data in and out, *à la* RedShift?
 
 ## TODOnes
 
