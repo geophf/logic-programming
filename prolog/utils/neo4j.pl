@@ -26,6 +26,8 @@ graph_connect_info(User, Pass, Endpoint) :-
 
 transaction(URL, Xact) :-
    atom_string(URL, DB),
+
+   % we assume the URL is terminated with a /, or else everything breaks.
    string_concat(DB, "transaction/commit", BD),
    atom_string(Xact, BD).
 
@@ -45,4 +47,7 @@ upload_to_graph_store1(Cyphers, User, Pass, Endpoint,
 rows_metadata_errors(Atom, Rows, Metadata, Errors) :-
    name(Atom, Str),
    json(object(Obj), Str, []),
-   true.
+   avl_get(Obj, errors, array(Errs)),
+   avl_get(Obj, results, array([object(Res)])),
+   avl_get(Res, data, array(Rows)), % rows are composed of row and meta
+

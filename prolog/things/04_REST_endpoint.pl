@@ -27,21 +27,6 @@ $ swipl -o qit -c things/04_REST_endpoint.pl
 :- ['utils/avl'].
 :- ['utils/neo4j'].
 
-/*
-main([URL, User, Pass]) :-
-   % transaction(URL, Endpoint),  % don't know why this is failing, but it is... :/
-   Endpoint = URL,
-   Query = "MATCH (n) RETURN n LIMIT 5",
-   prolog_to_json(cypher([query(Query)]), JSON),
-   json_it(Endpoint, JSON, User, Pass).
-
-main(_) :-
-   write('You must call this with the URL, the username, and password to the REST endpoint.'),
-   nl.
-
-% replacing with things/05_environment/graph_connect_info
-*/
-
 main(_) :-
    graph_connect_info(User, Pass, URL),
    transaction(URL, Endpoint),
@@ -55,16 +40,9 @@ json_it(Endpoint, JSON, User, Pass) :-
    json(object(Obj), Str, []),
    avl_get(Obj, results, array([object(Res)])),
    avl_get(Res, data, array(Rows)), % rows are composed of row and meta
-   do(process_row, Rows).
-
-/*
-moved to utils/neo4j-library
-
-transaction(URL, Xact) :-
-   atom_string(URL, DB),
-   string_concat(DB, "/transaction/commit", BD),
-   atom_string(Xact, BD).
-*/
+   do(process_row, Rows), nl,
+   avl_get(Obj, errors, array(Errs)),
+   write('Errors were '), print(Errs), nl.
 
 process_row(object(Row)) :-
    avl_get(Row, row, array([Item])),
