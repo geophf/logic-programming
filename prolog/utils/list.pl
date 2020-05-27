@@ -5,6 +5,10 @@
 head([H|_], H).
 tail([_|T], T).
 
+/*
+head/2 and tail/2 are fst and snd, as lists are pairs of the '.' functor
+*/
+
 concat(Lists, List) :- concat1(Lists, List, []).
 
 concat1([]) --> [].
@@ -57,6 +61,7 @@ range(A,B,[A|Ans]) :-
    C is A + 1,
    range(C,B,Ans).
 
+/* ------------------------------------------------------- */
 /* List predicates that take a functional-argument: */
 
 reduce(_, Sum, [], Sum).
@@ -123,9 +128,29 @@ zip_with1(Fn, [A|As], [B|Bs]) -->
    [C],
    zip_with1(Fn, As, Bs).
 
-/* ... and some combinatorics */
+/* 
+unzip(+, -, -) takes a list of pairs and returns a list of the firsts
+and a list of the seconds of the pairs
+*/
 
-/* pick(s) are (re)written in DCG-friendly-style */
+unzip(Pairs, As, Bs) :- unzip_with(unpair, Pairs, As, Bs).
+
+unzip_with(_, [], [], []).
+unzip_with(Fn, [H|T], [A|X], [B|Y]) :-
+   call(Fn, H, A, B),
+   unzip_with(Fn, T, X, Y).
+
+/*
+?- unzip([1-2,3-4], As, Bs).
+As=[1,3],
+Bs=[2,4]
+
+yes
+*/
+
+/* ------------------------------------------------------- combinatorics */
+
+/* pick(s) are (re)written in DCG-friendly-style and renamed as delete/3 */
 
 delete(H, [H|T], T).
 delete(P, [H|T], [H|L]) :-
