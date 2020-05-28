@@ -17,6 +17,9 @@ So, for the first example graph we have the edge-clause form as follows:
 :- ['utils/list'].
 :- ['utils/avl'].
 :- ['utils/graph'].
+:- ['utils/neo4j'].
+:- ['utils/cypher'].
+:- ['utils/io'].
 
 edge(h,g).
 edge(k,f).
@@ -67,11 +70,14 @@ edge_clause_list2graph_term(Edges, graph(Nodes, Edges1)) :-
    % now we can remove the edge(d,d) or we can keep it. 
    % The graph form removes it.
 
-   remove_idem_edges(Edges, Edges1).
+   remove_idem_edges(Edges, E0),
+   map(edge_to_e, E0, Edges1).
+
+edge_to_e(edge(A, B), e(A, B)).
 
 /*
 ?- edge_clause2graph_term(Graph).
-Graph=graph([b,c,d,f,g,h,k],[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c)])
+Graph=graph([b,c,d,f,g,h,k],[e(h,g),e(k,f),e(f,b),e(f,c),e(b,c)])
 
 yes
 
@@ -144,7 +150,7 @@ So, with that, we can go from human_readable to graph_term thus:
 ?- edge_clause_list2human_readable(E, [h-g,k-f,f-b,f-c,b-c,d]), 
    edge_clause_list2graph_term(E, G).
 E=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c),edge(d,d)],
-G=graph([b,c,d,f,g,h,k],[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c)])
+G=graph([b,c,d,f,g,h,k],[e(h,g),e(k,f),e(f,b),e(f,c),e(b,c)])
 
 Voilà.
 */
@@ -209,5 +215,16 @@ BONUS!
 Model the above graph, and address the above questions, exporting the graph
 to neo4j. Download the answers into Prolog.
 
-TBD
+First: we use the graph-term form to translate between the graph store and
+Prolog.
 */
+
+upload_simple_graph(Graph) :-
+   materialize_cyphers(Graph, Cyphers, []),
+   store_graph(Cyphers).
+
+materialize_cyphers(graph(Nodes, Edges)) -->
+   { map(create_node, Nodes, N1),
+     map(merge_relation, Edges, E1) },
+   N1,
+   E1.
