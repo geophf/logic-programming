@@ -62,6 +62,11 @@ range(A,B,[A|Ans]) :-
    range(C,B,Ans).
 
 /* ------------------------------------------------------- */
+/* ... we're getting A LITTLE BIT into Category Theory here ... */
+
+join(ListOLists, List) :- flatten(ListOLists, List).
+
+/* ------------------------------------------------------- */
 /* List predicates that take a functional-argument: */
 
 reduce(_, Sum, [], Sum).
