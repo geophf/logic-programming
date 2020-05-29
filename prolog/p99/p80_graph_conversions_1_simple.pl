@@ -40,25 +40,7 @@ BOOM!
 */
 
 % moving all_nodes/2 to utils/graph-library.
-
-remove_idem_edges(Edges, NonDups) :-
-   rie(Edges, NonDups, []).
-
-rie([]) --> [].
-rie([H|T]) -->
-   ({ H = edge(X, X) } ->
-       []
-    ;
-       [H]),
-   rie(T).
-
-/*
-?- edges(Edges), remove_idem_edges(Edges, NonDups).
-Edges=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c),edge(d,d)],
-NonDups=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c)]
-
-yes
-*/
+% generalizing and moving remove_idem_edges/2 to utils/graph-library.
 
 edge_clause2graph_term(Graph) :-
    edges(Edges),
@@ -71,10 +53,10 @@ edge_clause_list2graph_term(Edges, graph(Nodes, Edges1)) :-
    % The graph form removes it.
 
    remove_idem_edges(Edges, E0),
-   map(edge_to_e, E0, Edges1).
+   map(relabel_edge(e), E0, Edges1).
 
-edge_to_e(Edge, e(A, B)) :-
-   unpair(Edge, A, B).
+% generalizing and moving edge_to_e/2 to utils/graph-library as
+% relabel_edge/3.
 
 /*
 ?- edge_clause2graph_term(Graph).

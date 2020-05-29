@@ -3,6 +3,7 @@ Some common graph utilities...
 */
 
 :- ['utils/cat'].
+:- ['utils/avl'].
 
 /* 
 all_nodes/2
@@ -27,3 +28,28 @@ Nodes=[b,c,d,f,g,h,k]
 
 yes
 */
+
+/*
+Removes any edges that self-identify a singleton node. Why? This is for
+the graph-term representation that does not have node-self-referring edges.
+*/
+
+remove_idem_edges(Edges, NonDups) :-
+   rie(Edges, NonDups, []).
+
+rie([]) --> [].
+rie([H|T]) -->
+   ({ unpair(H, A, B), A = B } -> [] ; [H]),
+   rie(T).
+
+/*
+?- edges(Edges), remove_idem_edges(Edges, NonDups).
+Edges=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c),edge(d,d)],
+NonDups=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c)]
+
+yes
+*/
+
+relabel_edge(Fn, Edge, Term) :-
+   unpair(Edge, A, B),
+   Term =.. [Fn, A, B].
