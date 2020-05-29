@@ -73,7 +73,8 @@ edge_clause_list2graph_term(Edges, graph(Nodes, Edges1)) :-
    remove_idem_edges(Edges, E0),
    map(edge_to_e, E0, Edges1).
 
-edge_to_e(edge(A, B), e(A, B)).
+edge_to_e(Edge, e(A, B)) :-
+   unpair(Edge, A, B).
 
 /*
 ?- edge_clause2graph_term(Graph).
@@ -228,3 +229,42 @@ materialize_cyphers(graph(Nodes, Edges)) -->
      map(merge_relation, Edges, E1) },
    N1,
    E1.
+
+% Okay, so we've uploaded the graph. Now, let's download it:
+
+extract_label([label = Label], Label).
+
+vertices(Vertices) :-
+   query_graph_store(["MATCH (n) RETURN n"], Response),
+   Response = result_set(data(Rows), _, _),
+   map(extract_label, Rows, Vertices).
+
+/*
+?- vertices(Vertices).
+Vertices = [b, c, d, f, g, h, k] .
+*/
+
+extract_rel(A - B, C - D) :-
+   map(extract_label, [A, B], [C, D]).
+
+relations(Edges) :-
+   query_graph_store(["MATCH path=()-[]->() RETURN path"], Response),
+   Response = result_set(data(Rows), _, _),
+   map(extract_rel, Rows, Edges).
+
+/*
+?- relations(Edges).
+Edges = [b-c, f-c, f-b, h-g, k-f] .
+*/
+
+% Therefore:
+
+graph(graph(Nodes, Edges)) :-
+   vertices(Nodes),
+   relations(Es),
+   map(edge_to_e, Es, Edges).
+
+/*
+?- graph(G).
+G = graph([b,c,d,f,g,h,k], [e(b,c), e(f,c), e(f,b), e(h,g), e(k,f)]) .
+*/
