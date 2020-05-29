@@ -45,6 +45,7 @@ Eh, programming is a work-in-progress, isn't it. Just like life.
 
 * Encode and decode documents using my [Huffman encoder](https://github.com/geophf/logic-programming/blob/master/prolog/p99/p50_huffman_code.pl)
 * REST access *(done)* ... or maybe shift data in and out, *à la* RedShift?
+* Thought for article: "Partitioning Data by Type in neo4j Graph Database"
 
 ## TODOnes
 
