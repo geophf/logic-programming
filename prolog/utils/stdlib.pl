@@ -7,3 +7,8 @@
 :- ['utils/io'].
 :- ['utils/json'].
 :- ['utils/graph'].
+
+% for our graph data store.
+
+:- ['utils/cypher'].
+:- ['utils/neo4j'].

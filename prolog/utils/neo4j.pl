@@ -31,23 +31,51 @@ transaction(URL, Xact) :-
    string_concat(DB, "transaction/commit", BD),
    atom_string(Xact, BD).
 
-upload_to_graph_store(Cyphers, Response) :-
+store_graph(Cyphers) :-
    graph_connect_info(User, Pass, URL),
    transaction(URL, Endpoint),
-   upload_to_graph_store1(Cyphers, User, Pass, Endpoint, Response).
+   store_graph1(Cyphers, User, Pass, Endpoint, _).
 
-upload_to_graph_store1(Cyphers, User, Pass, Endpoint,
-                       result_set(Rows, Metadata, Errors)) :-
+tag(Fn, Val, Tag) :-
+   Tag =.. [Fn, Val].
+
+store_graph1(Cyphers, User, Pass, Endpoint, Response) :-
    map(tag(query), Cyphers, Stmts),
    prolog_to_json(cypher(Stmts), JSON),
-   http_post(Endpoint, json(JSON), Atom,
-             [authorization(basic(User, Pass))]),
-   rows_metadata_errors(Atom, Rows, Metadata, Errors).
+   http_post(Endpoint, json(JSON), Response,
+             [authorization(basic(User, Pass))]).
 
-rows_metadata_errors(Atom, Rows, Metadata, Errors) :-
-   name(Atom, Str),
-   json(object(Obj), Str, []),
-   avl_get(Obj, errors, array(Errs)),
-   avl_get(Obj, results, array([object(Res)])),
-   avl_get(Res, data, array(Rows)), % rows are composed of row and meta
+query_graph_store(Cyphers, Response) :-
+   graph_connect_info(User, Pass, URL),
+   transaction(URL, Endpoint),
+   query_graph_store1(Cyphers, User, Pass, Endpoint, Response).
 
+query_graph_store1(Cyphers, User, Pass, Endpoint,
+                       result_set(Rows, Metadata, Errors)) :-
+   store_graph1(Cyphers, User, Pass, Endpoint, JSON),
+   rows_metadata_errors(JSON, Rows, Metadata, Errors).
+
+rows_metadata_errors(json(JSON), data(Rows), metadata(Metadata), errors(Errors)) :-
+   [results = [Results], errors = Errors] = JSON,
+   extract(data, Results, Data),
+   unzip_with(row_meta, Data, Rows, Metadata).
+
+extract(Key, json(Row), Value) :-
+   extract1(Key, Row, Value).
+
+extract1(Key, [Key=Value|_], Value).
+extract1(Key, [K1=_|T], Value) :-
+   not(Key = K1),
+   extract1(Key, T, Value).
+
+row_meta(json(Result), Row, meta(Meta)) :-
+   [row = [json(Row)], meta = [json(Meta)]] = Result.
+row_meta(json(Result), Row, Metas) :-
+   [row = [JSONS], meta = [MList]] = Result,
+   relate(JSONS, Row),
+   map(dejson, MList, M0),
+   map(tag(meta), M0, Metas).
+
+dejson(json(Term), Term).
+relate(Row, A-B) :-
+   map(dejson, Row, [A, _, B]).
