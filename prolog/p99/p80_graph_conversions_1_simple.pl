@@ -18,7 +18,6 @@ So, for the first example graph we have the edge-clause form as follows:
 :- ['utils/avl'].
 :- ['utils/graph'].
 :- ['utils/neo4j'].
-:- ['utils/cypher'].
 :- ['utils/io'].
 
 edge(h,g).
@@ -184,51 +183,6 @@ First: we use the graph-term form to translate between the graph store and
 Prolog.
 */
 
-upload_simple_graph(Graph) :-
-   materialize_cyphers(Graph, Cyphers, []),
-   store_graph(Cyphers).
+% moved upload_simple_graph/1 to utils/neo4j
 
-materialize_cyphers(graph(Nodes, Edges)) -->
-   { map(create_node, Nodes, N1),
-     map(merge_relation, Edges, E1) },
-   N1,
-   E1.
-
-% Okay, so we've uploaded the graph. Now, let's download it:
-
-extract_label([label = Label], Label).
-
-vertices(Vertices) :-
-   query_graph_store(["MATCH (n) RETURN n"], Response),
-   Response = result_set(data(Rows), _, _),
-   map(extract_label, Rows, Vertices).
-
-/*
-?- vertices(Vertices).
-Vertices = [b, c, d, f, g, h, k] .
-*/
-
-extract_rel(A - B, C - D) :-
-   map(extract_label, [A, B], [C, D]).
-
-relations(Edges) :-
-   query_graph_store(["MATCH path=()-[]->() RETURN path"], Response),
-   Response = result_set(data(Rows), _, _),
-   map(extract_rel, Rows, Edges).
-
-/*
-?- relations(Edges).
-Edges = [b-c, f-c, f-b, h-g, k-f] .
-*/
-
-% Therefore:
-
-graph(graph(Nodes, Edges)) :-
-   vertices(Nodes),
-   relations(Es),
-   map(edge_to_e, Es, Edges).
-
-/*
-?- graph(G).
-G = graph([b,c,d,f,g,h,k], [e(b,c), e(f,c), e(f,b), e(h,g), e(k,f)]) .
-*/
+% moved vertices/1, relations/1 and graph/1 to utils/neo4j

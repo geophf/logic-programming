@@ -3,6 +3,18 @@ Graph-to-cypher conversion predicates
 */
 
 :- ['utils/list'].
+:- ['utils/cat'].
+
+/*
+We use the graph-term form to translate between the graph store and Prolog.
+*/
+
+materialize_cyphers(Graph) -->
+   { unpair(Graph, Nodes, Edges),
+     map(create_node, Nodes, N1),
+     map(merge_relation, Edges, E1) },
+   N1,
+   E1.
 
 node(Var, Label, Node) :-
    atom_string(Label, Name),
@@ -30,9 +42,10 @@ rel(A, Rel, B, Relation) :-
    node_ref(A, ARef),
    node_ref(B, BRef),
    atom_string(Rel, RelStr),
-   str_cats([ARef, "<-[:", RelStr, "]->", BRef], Relation).
+   str_cats([ARef, "-[:", RelStr, "]->", BRef], Relation).
 
-merge_relation(e(A, B), Stmt) :-
+merge_relation(Edge, Stmt) :-
+   unpair(Edge, A, B),
    match_node(a, A, MatchA),
    match_node(b, B, MatchB),
    rel(a, 'EDGE', b, Rel),

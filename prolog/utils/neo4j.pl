@@ -14,6 +14,14 @@ Routines to connect to, upload to, and download from neo4j graph store.
 
 :- ['utils/json'].
 :- ['utils/avl'].
+:- ['utils/cypher'].
+:- ['utils/graph'].
+
+/* ------------------------------------------------------- uploading ---- */
+
+upload_simple_graph(Graph) :-
+   materialize_cyphers(Graph, Cyphers, []),
+   store_graph(Cyphers).
 
 % stolen from things/05_environment
 
@@ -28,6 +36,7 @@ transaction(URL, Xact) :-
    atom_string(URL, DB),
 
    % we assume the URL is terminated with a /, or else everything breaks.
+
    string_concat(DB, "transaction/commit", BD),
    atom_string(Xact, BD).
 
@@ -44,6 +53,47 @@ store_graph1(Cyphers, User, Pass, Endpoint, Response) :-
    prolog_to_json(cypher(Stmts), JSON),
    http_post(Endpoint, json(JSON), Response,
              [authorization(basic(User, Pass))]).
+
+/* ------------------------------------------------------- downloading --- */
+
+% Okay, so we've uploaded the graph. Now, let's download it:
+
+extract_label([label = Label], Label).
+
+vertices(Vertices) :-
+   query_graph_store(["MATCH (n) RETURN n"], Response),
+   Response = result_set(data(Rows), _, _),
+   map(extract_label, Rows, Vertices).
+
+/*
+?- vertices(Vertices).
+Vertices = [b, c, d, f, g, h, k] .
+*/
+
+extract_rel(A - B, C - D) :-
+   map(extract_label, [A, B], [C, D]).
+
+relations(Edges) :-
+   query_graph_store(["MATCH path=()-[]->() RETURN path"], Response),
+   Response = result_set(data(Rows), _, _),
+   map(extract_rel, Rows, Edges).
+
+/*
+?- relations(Edges).
+Edges = [b-c, f-c, f-b, h-g, k-f] .
+*/
+
+% Therefore:
+
+graph(graph(Nodes, Edges)) :-
+   vertices(Nodes),
+   relations(Es),
+   map(relabel_edge(e), Es, Edges).
+
+/*
+?- graph(G).
+G = graph([b,c,d,f,g,h,k], [e(b,c), e(f,c), e(f,b), e(h,g), e(k,f)]) .
+*/
 
 query_graph_store(Cyphers, Response) :-
    graph_connect_info(User, Pass, URL),
