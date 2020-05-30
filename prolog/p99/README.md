@@ -212,23 +212,27 @@ given nodes.
 
 ![NY Times article titles and topics](imgs/nyt-article-topic-graph.png)
 
-This begs the question for me: certainly, we can represent graph data, and 
-perform analytics on those data entirely in Prolog. But why not use a graph
-database, e.g.: [neo4j](https://neo4j.com/)?
+The p99/p80 problem set gets into graphs, so, not only am I answering those
+questions in a pure (and functionally pure, eheh) prolog-way, but I am also
+answering them by
 
-This being the case, we can do all the above problems by translating Prolog
-terms to a graph representation (Cypher), uploading those data sets to the
-graph database, then read the results from the graph database REST endpoint.
+1. uploading the graph to the [neo4j](https://neo4j.com/) 
+[graph-store](https://www.graphenedb.com/)
+2. Then querying the cloud-graph with 
+[Cypher-queries in Prolog](https://github.com/geophf/logic-programming/blob/master/prolog/utils/cypher.pl)
 
-*Whew!* That'll be something!
+It's working ... pretty well so far.
 
-* The article 
-[http_json.pl](https://eu.swi-prolog.org/pldoc/doc/_SWI_/library/http/http_json.pl)
-may be an insight into querying a JSON endpoint... *WITH JSON!*
-* Also see
-[http_open.pl](https://eu.swi-prolog.org/pldoc/doc_for?object=http_open%3Ahttp_open/3)
-for connecting to a REST endpoint with username/password and POSTing data.
+* p99/p80's simple graph:
+
+![simple graph](imgs/p80-a-simple-graph.png)
+
+* p99/p80's directed graph (with directed arcs for edges):
+
+![directed graph](imgs/p80-b-directed-graph.png)
+
+The complication here is that the graph data intermingles, so I am **TODO**
+looking into types to partition graph data.
+
 * Also there is a CSV endpoint and SPARQL endpoint reader in `data_source/2`
 available at ... well, I don't know where the documentation is for this!
-
-The story thus far is chronicled in [things/04_REST_endpoint.pl](https://github.com/geophf/logic-programming/blob/master/prolog/things/04_REST_endpoint.pl).
