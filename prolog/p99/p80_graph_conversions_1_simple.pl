@@ -67,21 +67,7 @@ yes
 ... backwards doesn't halt.
 */
 
-adjacent_nodes_to(Edges, Node, n(Node, Nexts)) :-
-   ant(Edges, Node, Nexts, []).
-
-ant([], _) --> [].
-ant([edge(A, B)|Edges], N) -->
-   ({ N = A, C = B ; N = B, C = A } -> [C] ; []),
-   ant(Edges, N).
-
-/*
-?- edges(Edges), adjacent_nodes_to(Edges, b, Node).
-Edges=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c),edge(d,d)],
-Node=n(b,[f,c])
-
-yes
-*/
+% moved adjacent_nodes_to/3 to utils/graph
 
 edge_clause2adjacency_list(Adjays) :-
    edges(Edges),
@@ -105,11 +91,7 @@ edge_clause2human_readable(Human) :-
    edges(Edges),
    edge_clause_list2human_readable(Edges, Human).
 
-edge_clause_list2human_readable(Edges, Human) :-
-   map(detup_retup, Edges, Human).
-
-detup_retup(edge(A, B), A - B).
-detup_retup(edge(X, X), X).
+% moving edge_clause_list2human_readable/2 and detup_retup/2 to utils/graph
 
 /*
 ?- edge_clause2human_readable(Human).

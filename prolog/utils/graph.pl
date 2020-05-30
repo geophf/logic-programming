@@ -53,3 +53,31 @@ yes
 relabel_edge(Fn, Edge, Term) :-
    unpair(Edge, A, B),
    Term =.. [Fn, A, B].
+
+/* We collect nodes adjacent to some node, N, here. */
+
+adjacent_nodes_to(Edges, Node, n(Node, Nexts)) :-
+   ant(Edges, Node, Nexts, []).
+
+ant([], _) --> [].
+ant([Edge|Edges], N) -->
+   { unpair(Edge, A, B) },
+   ({ N = A, C = B ; N = B, C = A } -> [C] ; []),
+   ant(Edges, N).
+
+/*
+?- edges(Edges), adjacent_nodes_to(Edges, b, Node).
+Edges=[edge(h,g),edge(k,f),edge(f,b),edge(f,c),edge(b,c),edge(d,d)],
+Node=n(b,[f,c])
+
+yes
+*/
+
+/* here we convert a graph to human_readable form */
+
+edge_clause_list2human_readable(Edges, Human) :-
+   map(detup_retup, Edges, Human).
+
+detup_retup(Edge, HRForm) :-
+   unpair(Edge, A, B),
+   (A = B -> HRForm = A ; HRForm = A - B).
