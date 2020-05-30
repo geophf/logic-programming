@@ -3,8 +3,8 @@ p80, continued. Now we look at arc/2
 */
 
 :- ['utils/graph'].
-
 :- ['utils/list'].
+:- ['utils/neo4j'].
 
 arc(s,u).
 arc(u,r).
@@ -102,6 +102,27 @@ Humans = [s>u, u>r, s>r, u>s, v>u, t] .
 
 /*
 And now we load this arc_term graph, or digraph, to the neo4j graph store.
+
+?- arc_clause2graph_term(G), upload_simple_graph(G).
+G = digraph([r,s,t,u,v], [a(s,u), a(u,r), a(s,r), a(u,s), a(v,u), a(t,t)]) .
+
+ ?- vertices(V).
+V = [r, s, t, u, v] 
+
+?- relations(R).
+R = [s-r, s-u, t-t, u-s, u-r, v-u] .
 */
 
-% TODO: do that.
+digraph(digraph(Nodes, Rels)) :-
+   vertices(Nodes),
+   relations(R),
+   map(to_arc,R, Rels).
+
+to_arc(A-B, a(A, B)).
+
+/*
+?- digraph(G).
+G = digraph([r,s,t,u,v], [a(s,r), a(s,u), a(t,t), a(u,s), a(u,r), a(v,u)]) .
+
+et voilà!
+*/
