@@ -8,7 +8,7 @@ upside the head!??!?
 ![Nielsen and Chuang](imgs/nielsen-chuang.jpeg)
 
 So, what do I do, besides sue the bejeezis out of
-every company know to man, like any red-blooded American would?
+every company known to man, like any red-blooded American would?
 
 I reads me the book, that's what I do!
 
