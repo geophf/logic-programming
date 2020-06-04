@@ -20,4 +20,10 @@ That'll take a while.
 
 *... a while later, hm, hm, hm ...*
 
+Now we need to install the plotting software:
+
+```bash
+$ pip install matplotlib
+```
+
 Then do the [qiskit quantum tutorials](https://qiskit.org/documentation/tutorials/circuits/1_getting_started_with_qiskit.html). YAY!
