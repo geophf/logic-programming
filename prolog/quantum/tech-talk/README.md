@@ -18,6 +18,7 @@
 > … (1) and with a used washing machine, and ordinary hand tools, you, YES, YOU,
 too, can make your very own nuclear reactor, suitable for performing your very 
 own quantum computations (2)
+
 > … (2) some additional assembly may be required, not in the scope of this 
 tech-talk.
 
