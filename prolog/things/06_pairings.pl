@@ -35,6 +35,15 @@ paired(date('May 28, 2020'), howie, jose).
 paired(date('May 28, 2020'), shoaib, doug).  /* triple */
 paired(date('May 28, 2020'), ken, tony).
 
+/* week 3: jun 04 */
+
+paired(date('June 4, 2020'),len,ray).
+paired(date('June 4, 2020'),howie,nicole).
+paired(date('June 4, 2020'),morgan,tony).
+paired(date('June 4, 2020'),jose,apoorv).
+paired(date('June 4, 2020'),ken,shoaib).
+
+triple(date('June 4, 2020'),[doug,jose,apoorv]).
 triple(date('May 21, 2020'), [len, howie, tony]).
 triple(date('May 28, 2020'), [ray, shoaib, doug]).
 
