@@ -39,8 +39,8 @@ Awwww <3
 
 ![The QT](06-the-Quantum-enTanglement.png)
 
-This is the part where we write quantum programs
-… and we say: ‘Ooh!’ admiringly
+* This is the part where we write quantum programs
+* … and we say: ‘Ooh!’ admiringly
 
 ![Quantum Circuit Recipe](07-quantum-circuit-recipe.png)
 
