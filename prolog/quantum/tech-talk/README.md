@@ -15,10 +15,10 @@
   Classical Computation
 * Who’s making them? IBM, Google, INTEL, D-WAVE …(1)
 
-… (1) and with a used washing machine, and ordinary hand tools, you, YES, YOU, 
+> … (1) and with a used washing machine, and ordinary hand tools, you, YES, YOU,
 too, can make your very own nuclear reactor, suitable for performing your very 
 own quantum computations (2)
-… (2) some additional assembly may be required, not in the scope of this 
+> … (2) some additional assembly may be required, not in the scope of this 
 tech-talk.
 
 ![The Bad](03-lee-van-cleef.png)
@@ -52,7 +52,7 @@ Okay, let’s try this again:
 3. Compile circuit, execute on Quantum Computer
 4. Make your millions in Piranha Fish futures and commodities trading.
 
-… (a) although, come to think of it: if you throw in a banana peel, this 
+> … (a) although, come to think of it: if you throw in a banana peel, this 
 becomes good raw material for Mr. Fusion™
 
 ![Quantum Logic Gates](08-quantum-logic-gates.png)
