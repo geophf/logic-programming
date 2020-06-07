@@ -25,10 +25,20 @@ upload_simple_graph(Graph) :-
 
 % stolen from things/05_environment
 
-graph_connect_info(User, Pass, Endpoint) :-
-   getenv('PROLOG_GRAPH_USER', User),
-   getenv('PROLOG_GRAPH_PASS', Pass),
-   getenv('PROLOG_GRAPH_ENDPOINT', Endpoint).
+graph_connect_info(Database, User, Pass, Endpoint) :-
+   atom_string(Database, DB),
+   string_concat(DB, "_USER", UStr),
+   string_concat(DB, "_PASS", PStr),
+   string_concat(DB, "_ENDPOINT", EStr),
+   atom_string(U, UStr),
+   atom_string(P, PStr),
+   atom_string(E, EStr),
+   getenv(U, User),
+   getenv(P, Pass),
+   getenv(E, Endpoint).
+
+prolog_graph_connect(User, Pass, Endpoint) :-
+   graph_connect_info('PROLOG_GRAPH', User, Pass, Endpoint).
 
 % generalized from things/04_REST_endpoint
 
@@ -40,8 +50,8 @@ transaction(URL, Xact) :-
    string_concat(DB, "transaction/commit", BD),
    atom_string(Xact, BD).
 
-store_graph(Cyphers) :-
-   graph_connect_info(User, Pass, URL),
+store_graph(Database, Cyphers) :-
+   graph_connect_info(Database, User, Pass, URL),
    transaction(URL, Endpoint),
    store_graph1(Cyphers, User, Pass, Endpoint, _).
 
@@ -95,8 +105,8 @@ graph(graph(Nodes, Edges)) :-
 G = graph([b,c,d,f,g,h,k], [e(b,c), e(f,c), e(f,b), e(h,g), e(k,f)]) .
 */
 
-query_graph_store(Cyphers, Response) :-
-   graph_connect_info(User, Pass, URL),
+query_graph_store(Database, Cyphers, Response) :-
+   graph_connect_info(Database, User, Pass, URL),
    transaction(URL, Endpoint),
    query_graph_store1(Cyphers, User, Pass, Endpoint, Response).
 

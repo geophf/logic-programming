@@ -4,6 +4,7 @@ Graph-to-cypher conversion predicates
 
 :- ['utils/list'].
 :- ['utils/cat'].
+:- ['utils/str'].
 
 /*
 We use the graph-term form to translate between the graph store and Prolog.
@@ -16,27 +17,39 @@ materialize_cyphers(Graph) -->
    N1,
    E1.
 
-node(Var, Label, Node) :-
-   atom_string(Label, Name),
+% converts Term of form t(l1(a), l2(b), ..., ln(z)) to a neo4j node
+%    where t is the type and l1, ... ln are the labels for the data a, b, ... z
+
+node(Var, Term, Node) :-
+   Term =.. [Type|SubTerms],
    atom_string(Var, V),
-   str_cats(["(", V, ":Vertex { label: """, Name, """ })"], Node).
+   capitalize_atom2str(Type, Label),
+   map(term2attrib, SubTerms, Attribs),
+   list_str_with("{}", Attribs, AttribList),
+   str_cat(["(", V, ":", Label, " ", AttribList, " )"], Node).
 
-create_node(H, Stmt) :-
-   node(a, H, Node),
-   str_cats(["CREATE ", Node, "; "], Stmt).
+term2attrib(Term, Attrib) :-
+   Term =.. [Fn, Arg],
+   val(Arg, Val),
+   atom_string(Fn, Label),
+   str_cat([Label, ": ", Val], Attrib).
 
-match_node(Var, Label, Stmt) :-
-   node(Var, Label, Node),
-   str_cats(["MATCH ", Node, " "], Stmt).
+val(Val, Str) :-
+   number(Val) ->
+     number_string(Val, Str)
+   ;
+     str_cat(["\"", Val, "\""], Str).
+
+create_node(Term, Stmt) :-
+   node(a, Term, Node),
+   str_cat(["CREATE ", Node, "; "], Stmt).
+
+match_node(Var, Term, Stmt) :-
+   node(Var, Term, Node),
+   str_cat(["MATCH ", Node, " "], Stmt).
    
 node_ref(A, Ref) :-
-   atom_string(A, ARef),
-   str_cats(["(", ARef, ")"], Ref).
-
-rev_str_cat(A, B, C) :- string_concat(B, A, C).
-
-str_cats(Strings, String) :-
-   reduce(rev_str_cat, "", Strings, String).
+   list_str_with("()", [A], Ref).
 
 rel(A, Rel, B, Relation) :-
    node_ref(A, ARef),
@@ -44,9 +57,9 @@ rel(A, Rel, B, Relation) :-
    atom_string(Rel, RelStr),
    str_cats([ARef, "-[:", RelStr, "]->", BRef], Relation).
 
-merge_relation(Edge, Stmt) :-
+merge_relation(Type, Edge, Stmt) :-
    unpair(Edge, A, B),
    match_node(a, A, MatchA),
    match_node(b, B, MatchB),
-   rel(a, 'EDGE', b, Rel),
-   str_cats([MatchA, MatchB, "MERGE ", Rel, "; "], Stmt).
+   rel(a, Type, b, Rel),
+   str_cat([MatchA, MatchB, "MERGE ", Rel, "; "], Stmt).
