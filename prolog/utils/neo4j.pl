@@ -130,8 +130,8 @@ extract1(Key, [K1=_|T], Value) :-
 
 row_meta(Result, Row, Meta) :-
    extract(row, Result, Row),
-   (extract(meta, Result, M0) ->
-      Meta = meta(M0)
+   (extract(meta, Result, M0) ->    % necessary for older versions of database
+      Meta = meta(M0)               % that do not return metadata.
    ;
       Meta = no_meta).
    % [row = [json(Row)], meta = [json(Meta)]] = Result.
