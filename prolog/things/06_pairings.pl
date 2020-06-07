@@ -5,6 +5,29 @@ of pairings (then we need to age-out pairings, too
 Solution: voila!
 */
 
+:- ['utils/list'].
+:- ['utils/neo4j'].
+:- ['utils/cypher'].
+:- ['utils/str'].
+
+jigsawyers(Members) :-
+   query_graph_store('R', ["MATCH (p:Jigsawyer) RETURN p"], Response),
+   Response = result_set(data(Rows), _, _),
+   flatten(Rows, Names),
+   map(extract(name), Names, Members).
+
+% NamesStr is the names you want to add, e.g.: "Bob Joe Fred" ...
+
+upload_names(NamesStr) :-
+   words(NamesStr, Names),
+   map(tt_cn, Names, Cyphs),
+   store_graph('R', Cyphs).
+
+tt_cn(Name, Cyph) :-
+   atom_string(N, Name),
+   create_node(jigsawyer(name(N)), Cyph).
+
+/*
 member(len).
 member(howie).
 member(ray).
@@ -16,6 +39,7 @@ member(apoorv).
 member(ken).
 member(doug).
 member(shoaib).
+*/
 
 /* week 1: may 21 */
 
@@ -86,11 +110,6 @@ pair_it([H|T]) -->
      not(already_paired(H, R)) },
    [paired(H, R)],
    pair_it(Q).
-
-delete(H, [H|T], T).
-delete(P, [H|T], [H|R]) :-
-   delete(P, T, R).
-delete(_, [], []).
 
 /*
 TODO: move pairs to graph database

@@ -128,8 +128,13 @@ extract1(Key, [K1=_|T], Value) :-
    not(Key = K1),
    extract1(Key, T, Value).
 
-row_meta(json(Result), Row, meta(Meta)) :-
-   [row = [json(Row)], meta = [json(Meta)]] = Result.
+row_meta(Result, Row, Meta) :-
+   extract(row, Result, Row),
+   (extract(meta, Result, M0) ->
+      Meta = meta(M0)
+   ;
+      Meta = no_meta).
+   % [row = [json(Row)], meta = [json(Meta)]] = Result.
 row_meta(json(Result), Row, Metas) :-
    [row = [JSONS], meta = [MList]] = Result,
    relate(JSONS, Row),
