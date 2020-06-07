@@ -3,6 +3,7 @@
 :- ['utils/math'].
 :- ['utils/cat'].
 :- ['utils/list'].
+:- ['utils/str'].
 :- ['utils/avl'].
 :- ['utils/io'].
 :- ['utils/json'].
