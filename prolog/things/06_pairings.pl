@@ -10,9 +10,11 @@ Solution: voila!
 :- ['utils/cypher'].
 :- ['utils/str'].
 
+data_store('TEAM_PAIRING').
+
 jigsawyers(Members) :-
-   query_graph_store('TEAM_PAIRING',
-                     ["MATCH (p:Jigsawyer) RETURN p"], Response),
+   data_store(DB),
+   query_graph_store(DB, ["MATCH (p:Jigsawyer) RETURN p"], Response),
    Response = result_set(data(Rows), _, _),
    flatten(Rows, Names),
    map(extract(name), Names, Members).
@@ -22,7 +24,8 @@ jigsawyers(Members) :-
 upload_names(NamesStr) :-
    words(NamesStr, Names),
    map(tt_cn, Names, Cyphs),
-   store_graph('TEAM_PAIRING', Cyphs).
+   data_store(DB),
+   store_graph(DB, Cyphs).
 
 tt_cn(Name, Cyph) :-
    atom_string(N, Name),
@@ -82,7 +85,7 @@ then have
 
 (:LastPairings)-[:FOLLOWS]->(:Pairings date: date)-[:FOLLOWS]->(:Pairings ...)
 
-And pull the :PAIRED for the dates on the last n slowbacks.
+And pull the :PAIRED for the dates on the last n pairings.
 */
 
 /*
@@ -93,15 +96,32 @@ Let's add to our pairs-sets, uploading the pairs for today.
 
 SO, FRIST!
 
-We want to get the 'LastSlowback' and the link to its date, then link today's
-slowback to last slowback (deleting that old link), and pointing today's
-slowback as last slowback.
+We want to get the 'LastPairings' and the link to its date, then link today's
+pairings to last pairings (deleting that old link), and pointing today's
+pairings as last pairings.
 
-We ASSUME that today's slowback is alreadly linked with its pairs.
+We ASSUME that today's pairings is alreadly linked with its pairs.
 */
 
-link_pairings(_Date, _Pairings) :-
-   true.
+link_pairings(Date) :-
+   data_store(DB),
+   query_graph_store(DB,
+                    ["MATCH (:Top)-[a:AT]->(p:Pairings) DELETE a RETURN p"],
+                    LastPairing),
+   PairingsNode = pairings(date(Date)),
+   create_node1(PairingsNode, no_semicolon, Pairings),
+   match_node(t, top, Top),
+   rel(t, at, a, Rel),
+   str_cat([Top, Pairings, "MERGE ", Rel], Stmt),
+   relink(PairingsNode, LastPairing, Stmts),
+   store_graph(DB, [Stmt|Stmts]).
+
+relink(_, no_results(_), []).
+relink(Pairings, results(data([P]), _, _), [Merge]) :-
+   extract(date, P, DAtom),
+   atom_string(DAtom, PrevDate),
+   P1 = pairings(date(PrevDate)),
+   merge_relation(following, Pairings - P1, Merge).
 
 in_triple(A) :-
    triple(_, Trip),
