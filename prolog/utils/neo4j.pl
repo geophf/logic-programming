@@ -110,15 +110,20 @@ query_graph_store(Database, Cyphers, Response) :-
    transaction(URL, Endpoint),
    query_graph_store1(Cyphers, User, Pass, Endpoint, Response).
 
-query_graph_store1(Cyphers, User, Pass, Endpoint,
-                       result_set(Rows, Metadata, Errors)) :-
+query_graph_store1(Cyphers, User, Pass, Endpoint, Results) :-
    store_graph1(Cyphers, User, Pass, Endpoint, JSON),
-   rows_metadata_errors(JSON, Rows, Metadata, Errors).
+   rows_metadata_errors(JSON, Results).
 
-rows_metadata_errors(json(JSON), data(Rows), metadata(Metadata), errors(Errors)) :-
-   [results = [Results], errors = Errors] = JSON,
-   extract(data, Results, Data),
-   unzip_with(row_meta, Data, Rows, Metadata).
+rows_metadata_errors(JSON, Results) :-
+   extract(results, JSON, Rows),
+   extract(errors, JSON, Errors),
+   map(extract(data), Rows, Datas),
+   flatten(Datas, Data),
+   process_results(Data, Errors, Results).
+
+process_results([], Err, no_results(errors(Err))).
+process_results([H|T], Err, results(data(Rows), metadata(MD), errors(Err))) :-
+   unzip_with(row_meta, [H|T], Rows, MD).
 
 extract(Key, json(Row), Value) :-
    extract1(Key, Row, Value).
@@ -128,18 +133,24 @@ extract1(Key, [K1=_|T], Value) :-
    not(Key = K1),
    extract1(Key, T, Value).
 
-row_meta(Result, Row, Meta) :-
-   extract(row, Result, Row),
-   (extract(meta, Result, M0) ->    % necessary for older versions of database
-      Meta = meta(M0)               % that do not return metadata.
+row_meta(Result, RowR, Metas) :-
+   extract(row, Result, [Rows]),
+   (extract(meta, Result, [M0]) ->    % necessary for older versions of database
+      Meta = meta(M0)                 % that do not return metadata.
    ;
-      Meta = no_meta).
-   % [row = [json(Row)], meta = [json(Meta)]] = Result.
-row_meta(json(Result), Row, Metas) :-
-   [row = [JSONS], meta = [MList]] = Result,
-   relate(JSONS, Row),
-   map(dejson, MList, M0),
+      Meta = no_meta),
+   row_meta1(Rows, Meta, RowR, Metas).     % You can't kill the meta1
+
+% For a relation result
+
+row_meta1(Rows, Meta, RowR, Metas) :-  
+   relate(Rows, RowR),
+   map(dejson, Meta, M0),
    map(tag(meta), M0, Metas).
+
+% For other results
+
+row_meta1(Rows, Meta, Rows, Meta).
 
 dejson(json(Term), Term).
 relate(Row, A-B) :-
