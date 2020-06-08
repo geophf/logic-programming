@@ -11,7 +11,8 @@ Solution: voila!
 :- ['utils/str'].
 
 jigsawyers(Members) :-
-   query_graph_store('R', ["MATCH (p:Jigsawyer) RETURN p"], Response),
+   query_graph_store('TEAM_PAIRING',
+                     ["MATCH (p:Jigsawyer) RETURN p"], Response),
    Response = result_set(data(Rows), _, _),
    flatten(Rows, Names),
    map(extract(name), Names, Members).
@@ -21,7 +22,7 @@ jigsawyers(Members) :-
 upload_names(NamesStr) :-
    words(NamesStr, Names),
    map(tt_cn, Names, Cyphs),
-   store_graph('R', Cyphs).
+   store_graph('TEAM_PAIRING', Cyphs).
 
 tt_cn(Name, Cyph) :-
    atom_string(N, Name),
@@ -41,7 +42,9 @@ member(doug).
 member(shoaib).
 */
 
-/* week 1: may 21 */
+/*
+
+% week 1: may 21
 
 paired(date('May 21, 2020'), len, howie).   /* triple */
 paired(date('May 21, 2020'), ray, nichole).
@@ -50,7 +53,7 @@ paired(date('May 21, 2020'), howie, tony).  /* triple */
 paired(date('May 21, 2020'), shoaib, apoorv).
 paired(date('May 21, 2020'), ken, doug).
 
-/* week 2: may 28 */
+% week 2: may 28
 
 paired(date('May 28, 2020'), len, apoorv).
 paired(date('May 28, 2020'), ray, shoaib).   /* triple */
@@ -59,17 +62,46 @@ paired(date('May 28, 2020'), howie, jose).
 paired(date('May 28, 2020'), shoaib, doug).  /* triple */
 paired(date('May 28, 2020'), ken, tony).
 
-/* week 3: jun 04 */
+% week 3: jun 04
 
 paired(date('June 4, 2020'),len,ray).
 paired(date('June 4, 2020'),howie,nicole).
 paired(date('June 4, 2020'),morgan,tony).
-paired(date('June 4, 2020'),jose,apoorv).
+paired(date('June 4, 2020'),jose,apoorv).    /* triple */
 paired(date('June 4, 2020'),ken,shoaib).
 
 triple(date('June 4, 2020'),[doug,jose,apoorv]).
 triple(date('May 21, 2020'), [len, howie, tony]).
 triple(date('May 28, 2020'), [ray, shoaib, doug]).
+
+We need to upload these data to the graph store, I'm thinking
+
+(a)-[:PAIRED on: date]->(b) ...
+
+then have
+
+(:LastPairings)-[:FOLLOWS]->(:Pairings date: date)-[:FOLLOWS]->(:Pairings ...)
+
+And pull the :PAIRED for the dates on the last n slowbacks.
+*/
+
+/*
+So, FRIST!
+
+GIVEN: we've [somehow] [magically] created the pairs and triples for today,
+Let's add to our pairs-sets, uploading the pairs for today.
+
+SO, FRIST!
+
+We want to get the 'LastSlowback' and the link to its date, then link today's
+slowback to last slowback (deleting that old link), and pointing today's
+slowback as last slowback.
+
+We ASSUME that today's slowback is alreadly linked with its pairs.
+*/
+
+link_pairings(_Date, _Pairings) :-
+   true.
 
 in_triple(A) :-
    triple(_, Trip),

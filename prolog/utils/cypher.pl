@@ -21,12 +21,18 @@ materialize_cyphers(Graph) -->
 %    where t is the type and l1, ... ln are the labels for the data a, b, ... z
 
 node(Var, Term, Node) :-
+   thunk("()", Var, Term, Node).
+
+thunk(Brackets, Var, Term, Thunk) :-
+   string_codes(Brackets, [L, R]),
+   string_codes(LBr, [L]),
+   string_codes(RBr, [R]),
    Term =.. [Type|SubTerms],
    atom_string(Var, V),
    capitalize_atom2str(Type, Label),
    map(term2attrib, SubTerms, Attribs),
    list_str_with("{}", Attribs, AttribList),
-   str_cat(["(", V, ":", Label, " ", AttribList, " )"], Node).
+   str_cat([LBr, V, ":", Label, " ", AttribList, " ", RBr], Thunk).
 
 term2attrib(Term, Attrib) :-
    Term =.. [Fn, Arg],
@@ -51,15 +57,17 @@ match_node(Var, Term, Stmt) :-
 node_ref(A, Ref) :-
    list_str_with("()", [A], Ref).
 
+% Like node/3, rel/4 takes a term describing its attributes
+
 rel(A, Rel, B, Relation) :-
    node_ref(A, ARef),
    node_ref(B, BRef),
-   atom_string(Rel, RelStr),
-   str_cats([ARef, "-[:", RelStr, "]->", BRef], Relation).
+   thunk("[]", r, Rel, RelStr),
+   str_cats([ARef, "-", RelStr, "->", BRef], Relation).
 
-merge_relation(Type, Edge, Stmt) :-
+merge_relation(Term, Edge, Stmt) :-
    unpair(Edge, A, B),
    match_node(a, A, MatchA),
    match_node(b, B, MatchB),
-   rel(a, Type, b, Rel),
+   rel(a, Term, b, Rel),
    str_cat([MatchA, MatchB, "MERGE ", Rel, "; "], Stmt).
