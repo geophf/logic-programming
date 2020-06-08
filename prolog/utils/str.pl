@@ -27,14 +27,20 @@ str_cat_with(Sep, [S|Trs], Str) :-
    reduce(rev_str_cat_with(Sep), S, Trs, Str).
 
 list_str(List, String) :-
-   list_str_with("[]", List, String).
+   list_str_with("[]", List, String, force).
 
-list_str_with(Brackets, List, String) :-
+list_str_with(Brackets, [], Brackets, force).
+list_str_with(_, [], "", nothing_on_empty).
+list_str_with(Brackets, [H|T], String, _) :-
    string_codes(Brackets, [L, R]),
    string_codes(LBr, [L]),
    string_codes(RBr, [R]),
-   str_cat_with(", ", List, Lost),
-   str_cat([LBr, Lost, RBr], String).
+   str_cat_with(", ", [H|T], List),
+   str_cat([LBr, List, RBr], String).
+
+padded("", "").
+padded(Str, Padded) :-
+   str_cat([" ", Str, " "], Padded).
 
 words(Str, Words) :-
    string_codes(Str, Codes),
