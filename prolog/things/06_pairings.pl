@@ -14,10 +14,9 @@ data_store('TEAM_PAIRING').
 
 jigsawyers(Members) :-
    data_store(DB),
-   query_graph_store(DB, ["MATCH (p:Jigsawyer) RETURN p"], Response),
-   Response = result_set(data(Rows), _, _),
-   flatten(Rows, Names),
-   map(extract(name), Names, Members).
+   query_graph_store(DB, ["MATCH (p:Jigsawyer:ACTIVE) RETURN p"], Response),
+   Response = results(data(Rows), _, _),
+   map(extract(name), Rows, Members).
 
 % NamesStr is the names you want to add, e.g.: "Bob Joe Fred" ...
 
@@ -70,7 +69,7 @@ paired(date('May 28, 2020'), ken, tony).
 paired(date('June 4, 2020'),len,ray).
 paired(date('June 4, 2020'),howie,nicole).
 paired(date('June 4, 2020'),morgan,tony).
-paired(date('June 4, 2020'),jose,apoorv).    /* triple */
+% paired(date('June 4, 2020'),jose,apoorv).    /* triple */
 paired(date('June 4, 2020'),ken,shoaib).
 
 triple(date('June 4, 2020'),[doug,jose,apoorv]).
@@ -103,16 +102,16 @@ pairings as last pairings.
 We ASSUME that today's pairings is alreadly linked with its pairs.
 */
 
-link_pairings(Date) :-
+link_pairings(PairingsNode) :-
    data_store(DB),
    query_graph_store(DB,
                     ["MATCH (:Top)-[a:AT]->(p:Pairings) DELETE a RETURN p"],
                     LastPairing),
-   PairingsNode = pairings(date(Date)),
-   create_node1(PairingsNode, no_semicolon, Pairings),
-   match_node(t, top, Top),
-   rel(t, at, a, Rel),
-   str_cat([Top, Pairings, "MERGE ", Rel], Stmt),
+   % PairingsNode = pairings(date(Date)),
+   % create_node1(PairingsNode, no_semicolon, Pairings),
+   % match_node(t, top, Top),
+   merge_relation(at, top - PairingsNode, Stmt),
+   % str_cat([Top, Pairings, "MERGE ", Rel], Stmt),
    relink(PairingsNode, LastPairing, Stmts),
    store_graph(DB, [Stmt|Stmts]).
 
@@ -122,6 +121,21 @@ relink(Pairings, results(data([P]), _, _), [Merge]) :-
    atom_string(DAtom, PrevDate),
    P1 = pairings(date(PrevDate)),
    merge_relation(following, Pairings - P1, Merge).
+
+/*
+Okay, now that we've got that working ... assuming x, y, and z, let's create
+the pairings as a thing and link all out pairs in a link-friendly way.
+
+The structure is (joe)-[:PAIRED on: date]->(beatta) or
+(fran)-[:TRIPLED on: date]->(ed)-[:TRIPLED on: date]->(xavier)
+
+(so the membership test shall be different than what is declared below)
+
+... then all of the members, above, are linked to the (Pairings date: date) node
+*/
+
+upload_pairings(_Pairings) :-
+   true.
 
 in_triple(A) :-
    triple(_, Trip),
