@@ -44,38 +44,39 @@ member(doug).
 member(shoaib).
 */
 
-/*
-
 % week 1: may 21
 
-paired(date('May 21, 2020'), len, howie).   /* triple */
-paired(date('May 21, 2020'), ray, nichole).
-paired(date('May 21, 2020'), morgan, jose).
-paired(date('May 21, 2020'), howie, tony).  /* triple */
-paired(date('May 21, 2020'), shoaib, apoorv).
-paired(date('May 21, 2020'), ken, doug).
+week1(List) :-
+   % paired(date('May 21, 2020'), len, howie).   /* triple */
+   % paired(date('May 21, 2020'), howie, tony).  /* triple */
+   List = [paired(date('May 21, 2020'), ray, nicole),
+           paired(date('May 21, 2020'), morgan, jose),
+           paired(date('May 21, 2020'), shoaib, apoorv),
+           paired(date('May 21, 2020'), ken, doug),
+           triple(date('May 21, 2020'), [len, howie, tony])].
 
 % week 2: may 28
 
-paired(date('May 28, 2020'), len, apoorv).
-paired(date('May 28, 2020'), ray, shoaib).   /* triple */
-paired(date('May 28, 2020'), morgan, nichole).
-paired(date('May 28, 2020'), howie, jose).
-paired(date('May 28, 2020'), shoaib, doug).  /* triple */
-paired(date('May 28, 2020'), ken, tony).
+week2(List) :-
+   % paired(date('May 28, 2020'), ray, shoaib).   /* triple */
+   % paired(date('May 28, 2020'), shoaib, doug).  /* triple */
+   List = [paired(date('May 28, 2020'), len, apoorv),
+           paired(date('May 28, 2020'), morgan, nicole),
+           paired(date('May 28, 2020'), howie, jose),
+           paired(date('May 28, 2020'), ken, tony),
+           triple(date('May 28, 2020'), [ray, shoaib, doug])].
 
 % week 3: jun 04
 
-paired(date('June 4, 2020'),len,ray).
-paired(date('June 4, 2020'),howie,nicole).
-paired(date('June 4, 2020'),morgan,tony).
-% paired(date('June 4, 2020'),jose,apoorv).    /* triple */
-paired(date('June 4, 2020'),ken,shoaib).
+week3(List) :-
+   % paired(date('June 4, 2020'),jose,apoorv).    /* triple */
+   List = [paired(date('June 4, 2020'),len,ray),
+           paired(date('June 4, 2020'),howie,nicole),
+           paired(date('June 4, 2020'),morgan,tony),
+           paired(date('June 4, 2020'),ken,shoaib),
+           triple(date('June 4, 2020'),[doug,jose,apoorv])].
 
-triple(date('June 4, 2020'),[doug,jose,apoorv]).
-triple(date('May 21, 2020'), [len, howie, tony]).
-triple(date('May 28, 2020'), [ray, shoaib, doug]).
-
+/*
 We need to upload these data to the graph store, I'm thinking
 
 (a)-[:PAIRED on: date]->(b) ...
@@ -132,10 +133,36 @@ The structure is (joe)-[:PAIRED on: date]->(beatta) or
 (so the membership test shall be different than what is declared below)
 
 ... then all of the members, above, are linked to the (Pairings date: date) node
+
+Format for pairings are:
+
+paired(date('June 4, 2020'),ken,shoaib).
+
+triple(date('June 4, 2020'),[doug,jose,apoorv]).
 */
 
-upload_pairings(_Pairings) :-
-   true.
+upload_pairings(Date, Pairings, Mtg) :-
+   data_store(DB),
+   Mtg = pairings(date(Date)),
+   create_node(Mtg, Stmt),
+   map(upload_pairing(Mtg), Pairings, Rels),
+   flatten(Rels, Stmts),
+   write([Stmt|Stmts]), nl,
+   store_graph(DB, [Stmt|Stmts]).
+
+upload_pairing(Mtg, paired(date(Date), A, B), [S0|Stmts]) :-
+   map(capitalize_atom2str, [A, B], Caps),
+   map(namei, Caps, [Na, Nb]),
+   merge_relation(paired(on(Date)), Na - Nb, S0),
+   map(merge_relation(attended), [Na - Mtg, Nb - Mtg], Stmts).
+
+upload_pairing(Mtg, triple(date(Date), Trips), Stmts) :-
+   map(capitalize_atom2str, Trips, Caps),
+   map(namei, Caps, [Na, Nb, Nc]),
+   map1(merge_relation(tripled(on(Date))), [Na - Nb, Nb - Nc, Nc - Na], Ss, []),
+   map1(merge_relation(attended), [Na - Mtg, Nb - Mtg, Nc - Mtg], Stmts, Ss).
+
+namei(Person, jigsawyer(name(Person))).
 
 in_triple(A) :-
    triple(_, Trip),
