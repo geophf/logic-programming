@@ -51,9 +51,12 @@ transaction(URL, Xact) :-
    atom_string(Xact, BD).
 
 store_graph(Database, Cyphers) :-
+   store_graph_helper(Database, Cyphers, _).
+
+store_graph_helper(Database, Cyphers, Response) :-
    graph_connect_info(Database, User, Pass, URL),
    transaction(URL, Endpoint),
-   store_graph1(Cyphers, User, Pass, Endpoint, _).
+   store_graph1(Cyphers, User, Pass, Endpoint, Response).
 
 tag(Fn, Val, Tag) :-
    Tag =.. [Fn, Val].
