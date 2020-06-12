@@ -8,10 +8,12 @@
 % loads the teams to our graph store
 
 upload_names(Names) :-
-   map1(tt_cn, Names, Cyph0, []),
-   map1(id, ["MATCH (m) SET m:ACTIVE"], Cyphs, Cyph0),
+   map(tt_cn, Names, Cyphs),
    data_store(DB),
-   store_graph(DB, Cyphs).
+   store_graph(DB, Cyphs),
+
+   % must do this separately?
+   store_graph(DB, ["MATCH (m:Jigsawyer) SET m:ACTIVE"]).
 
 tt_cn(Name, Cyph) :-
    atom_string(N, Name),
