@@ -6,6 +6,24 @@
 
 :- ['apps/pairing/graph/admin'].
 
+pairing_context(DB, pairing_context(team_members(Members), pairings(Pears))) :-
+   jigsawyers(DB, Members),
+   apriori(DB, Members, Dates),
+   map(date2pairings(DB), Dates, Pairs),
+   flatten(Pairs, Pears)).
+
+date2pairings(DB, Date, Pairings) :-
+   pairings_on(DB, Date, P0),
+   (triple_on(DB, Date, Trip) -> Pairings = [Trip|P0] ; Pairings = P0).
+
+/*
+?- data_store(DB), pairing_context(DB, PC).
+DB = 'TEAM_PAIRING',
+PC = pairing_context(team_members(['Len', 'Howie', 'Nicole', 'Morgan'|...]),
+                     pairings([triple(date('June 4, 2020'), ['Apoorv'|...]),
+                               paired(date('June 4, 2020'), 'Len', 'Ray')|...]))
+*/
+
 jigsawyers(DB, Members) :-
    query_graph_store(DB, ["MATCH (p:Jigsawyer:ACTIVE) RETURN p"], Response),
    Response = results(data(Rows), _, _),
@@ -25,10 +43,9 @@ apriori(DB, Members, PreviousPairingDates) :-
    number_string(Meetns, M),
    Qn ="]->(ps:Pairings) RETURN p1, collect(ps)",
    str_cat([Q0, M, Qn], Query),
-   % query_graph_store(DB, [Query], PreviousPairings).
+   % query_graph_store(DB, [Query], PreviousPairings).  % nupe
 
 /*
-
 ... and here we get stuck because Data returned for p1, collect(ps) is:
 
 Data = [row=[json([date='June 4, 2020']), 
