@@ -15,7 +15,7 @@ member(shoaib).
 
 % week 1: may 21
 
-week1('May 21, 2020', List) :-
+week(1, 'May 21, 2020', List) :-
    % paired(date('May 21, 2020'), len, howie).   /* triple */
    % paired(date('May 21, 2020'), howie, tony).  /* triple */
    List = [paired(date('May 21, 2020'), ray, nicole),
@@ -26,7 +26,7 @@ week1('May 21, 2020', List) :-
 
 % week 2: may 28
 
-week2('May 28, 2020', List) :-
+week(2, 'May 28, 2020', List) :-
    % paired(date('May 28, 2020'), ray, shoaib).   /* triple */
    % paired(date('May 28, 2020'), shoaib, doug).  /* triple */
    List = [paired(date('May 28, 2020'), len, apoorv),
@@ -37,10 +37,27 @@ week2('May 28, 2020', List) :-
 
 % week 3: jun 04
 
-week3('June 4, 2020', List) :-
+week(3, 'June 4, 2020', List) :-
    % paired(date('June 4, 2020'),jose,apoorv).    /* triple */
    List = [paired(date('June 4, 2020'),len,ray),
            paired(date('June 4, 2020'),howie,nicole),
            paired(date('June 4, 2020'),morgan,tony),
            paired(date('June 4, 2020'),ken,shoaib),
            triple(date('June 4, 2020'),[doug,jose,apoorv])].
+
+/*
+week 4: jun 11 ... some things up in the air about this week:
+Nicole was called away. Tony/Ray/Jose/Apoorv: unknown ... pair them all
+together? idk.
+*/
+
+week(4, Date, List) :-
+   Date = 'June 11, 2020',
+   DD = date(Date),
+   List = [paired(DD,ken,len),
+           paired(DD,shoaib,morgan),
+
+% ... so: pairs of pairs of pairs? nupe! Apoorv gave me the what's what.
+
+           paired(DD,howie,apoorv),
+           triple(DD,[ray,jose,tony])].

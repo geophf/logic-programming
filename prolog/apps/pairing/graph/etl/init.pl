@@ -12,11 +12,11 @@ init_db :-
    findall(Name, (member(M), capitalize_atom2str(M, Name)), Names),
    upload_names(Names),
    init_top,
-   do(uploader, [week1, week2, week3]),
+   findall(week(Date, Pairings), week(_Idx, Date, Pairings), PairingsInfo),
+   do(uploader, PairingsInfo),
    write('Graph data store initialized.'), nl, nl, write('... have fun!'), nl.
 
-uploader(Fn) :-
-   Pairings =.. [Fn, Date, Week],
-   Pairings,
-   upload_pairings(Date, Week, Meetn),
+uploader(week(Date,Pairings)) :-
+   write('uploading pairings for '), write(Date), nl,
+   upload_pairings(Date, Pairings, Meetn),
    link_pairings(Meetn).

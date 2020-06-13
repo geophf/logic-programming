@@ -10,7 +10,7 @@ pairing_context(DB, pairing_context(team_members(Members), pairings(Pears))) :-
    jigsawyers(DB, Members),
    apriori(DB, Members, Dates),
    map(date2pairings(DB), Dates, Pairs),
-   flatten(Pairs, Pears)).
+   flatten(Pairs, Pears).
 
 date2pairings(DB, Date, Pairings) :-
    pairings_on(DB, Date, P0),
