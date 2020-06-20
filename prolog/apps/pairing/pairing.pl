@@ -1,4 +1,5 @@
 :- ['utils/list'].
+:- ['utils/io'].
 
 :- ['apps/pairing/graph/admin'].
 :- ['apps/pairing/graph/queries'].
@@ -13,7 +14,8 @@ RETURN p1, collect(p2)
 
 pair_up(Date, Pairs) :-
    generate_pairs(Date, Pairs),
-   store_pairs(Date, Pairs).
+   store_pairs(Date, Pairs),
+   do(write_term,Pairs).
 
 generate_pairs(Date, Pairs) :-
    data_store(DB),
