@@ -2,6 +2,11 @@
 
 :- ['apps/pairing/graph/admin'].
 :- ['apps/pairing/graph/queries'].
+:- ['apps/pairing/graph/etl/uploader'].
+
+pair_up(Date, Pairs) :-
+   generate_pairs(Date, Pairs),
+   store_pairs(Date, Pairs).
 
 generate_pairs(Date, Pairs) :-
    data_store(DB),
@@ -20,6 +25,11 @@ Pairs = [triple(date('June 18, 2020'), ['Shoaib', 'Nicole', 'Ken']),
          paired(date('June 18, 2020'), 'Jose', 'Tony'), 
          paired(date('June 18, 2020'), 'Apoorv', 'Doug')] .
 */
+
+store_pairs(Date, Pairs) :-
+   upload_pairings(Date, Pairs, Mtg),
+   link_pairings(Mtg),
+   write('... AAAAAANNNNNND ... we are done!'), nl.
 
 /*
 WITH the members, we need to compute the pairings and triplings Len // 2
