@@ -4,6 +4,13 @@
 :- ['apps/pairing/graph/queries'].
 :- ['apps/pairing/graph/etl/uploader'].
 
+/*
+To see the pairings in the graph:
+
+MATCH (:Top)-[:AT]->(p1:Pairings)-[:FOLLOWING*1..5]->(p2:Pairings) 
+RETURN p1, collect(p2)
+*/
+
 pair_up(Date, Pairs) :-
    generate_pairs(Date, Pairs),
    store_pairs(Date, Pairs).
