@@ -126,8 +126,7 @@ zip(As, Bs, Cs) :- zip_with(tup, As, Bs, Cs).
 
 zip_with(Fn, As, Bs, Cs) :- zip_with1(Fn, As, Bs, Cs, []).
 
-zip_with1(_, [], _) --> [].
-zip_with1(_, _, []) --> [].
+zip_with1(_, As, Bs) --> { As = [] ; Bs = [] } -> [].
 zip_with1(Fn, [A|As], [B|Bs]) -->
    { call(Fn, A, B, C) },
    [C],
