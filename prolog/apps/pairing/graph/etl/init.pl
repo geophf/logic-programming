@@ -9,9 +9,11 @@
 :- ['apps/pairing/graph/etl/uploader'].
 
 init_db :-
+   init_top,
    findall(Name, (member(M), capitalize_atom2str(M, Name)), Names),
    upload_names(Names),
-   init_top,
+   findall(Namu, (ex_member(N), capitalize_atom2str(N, Namu)), Unnames),
+   deactivate(Unnames),
    findall(week(Date, Pairings), week(_Idx, Date, Pairings), PairingsInfo),
    do(uploader, PairingsInfo),
    write('Graph data store initialized.'), nl, nl, write('... have fun!'), nl.

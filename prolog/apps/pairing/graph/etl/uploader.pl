@@ -15,6 +15,19 @@ upload_names(Names) :-
    % must do this separately?
    store_graph(DB, ["MATCH (m:Jigsawyer) SET m:ACTIVE"]).
 
+deactivate(Names) :-
+   map(find_name, Names, Ss),
+   flatten(Ss, Stmts),
+   data_store(DB),
+   store_graph(DB, Stmts).
+
+find_name(Name, [S1, S2]) :-
+   atom_string(N, Name),
+   Node =  jigsawyer(name(N)),
+   create_node(Node, S1),
+   match_node(m, Node, Match),
+   str_cat([Match, "SET m:Inactive SET m:SadFace"], S2).
+
 tt_cn(Name, Cyph) :-
    atom_string(N, Name),
    create_node(jigsawyer(name(N)), Cyph).
@@ -106,5 +119,11 @@ namei(Person, jigsawyer(name(Person))).
 
 init_top :-
    data_store(DB),
+   clear_graph(DB),
    create_node(top, T),
    store_graph(DB, [T]).
+
+% ooh! scary!
+
+clear_graph(DB) :-
+   store_graph(DB, ["MATCH (m) DETACH DELETE m"]).

@@ -13,6 +13,8 @@ member(ken).
 member(doug).
 member(shoaib).
 
+ex_member(roxi).
+
 % week 1: may 21
 
 week(1, 'May 21, 2020', List) :-
@@ -61,3 +63,13 @@ week(4, Date, List) :-
 
            paired(DD,howie,apoorv),
            triple(DD,[ray,jose,tony])].
+
+week(5, Date, List) :- 
+   Date = 'June 18, 2020',
+   words("ray howie shoaib ken", As),
+   words("tony apoorv morgan len", Bs),
+   zip_with(pairu(Date), As, Bs, List).
+
+pairu(DD, A, B, paired(date(DD), A1, B1)) :-
+   atom_string(A1, A),
+   atom_string(B1, B).
