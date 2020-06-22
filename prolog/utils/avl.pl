@@ -311,3 +311,13 @@ avl_alter_f1(>, NK, NV, L, R, D, K, V, AlterF, T) :-
         ->  avl_balance_right(NK, NV, L, R1, T)
         ;   T = t(NK, NV, L, R1, D) ).
 
+% why hadn't I thought of this before?
+
+avl_keys(Tree, Keys) :-
+   avl_keys1(Tree, Keys, []).
+
+avl_keys1(t) --> [].
+avl_keys1(t(K, _V, L, R, _D)) -->
+   avl_keys1(L),
+   [K],
+   avl_keys1(R).
