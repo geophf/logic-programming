@@ -1,5 +1,6 @@
 :- ['utils/list'].
 :- ['utils/io'].
+:- ['utils/cat'].
 
 :- ['apps/pairing/graph/admin'].
 :- ['apps/pairing/graph/queries'].
@@ -13,26 +14,40 @@ RETURN p1, collect(p2)
 */
 
 pair_up(Date, Pairs) :-
-   generate_pairs(Date, Pairs),
+   pair_up(Date, except([]), Pairs).
+
+pair_up(Date, Excepts, Pairs) :-
+   generate_pairs(Date, Excepts, Pairs),
    store_pairs(Date, Pairs),
    do(write_term,Pairs).
 
-generate_pairs(Date, Pairs) :-
+generate_pairs(Date, except(Nupes), Pairs) :-
    data_store(DB),
    pairing_context(DB, Context),
    Context = pairing_context(team_members(Members), pairings(History)),
+   map1(enpairify(Date), Nupes, Zupes, History),
 
    /* I could do a series of triple/2 and pair/3 assertions here, but ... */
 
-   pairs(Date, Members, History, Pairs).
+   pairs(Date, Members, Zupes, Pairs).
+
+enpairify(Datus, Pairus, paired(date(Datus), P, Q)) :-
+   unpair(Pairus, P, Q).
 
 /*
-?- generate_pairs('June 18, 2020', Pairs).
-Pairs = [triple(date('June 18, 2020'), ['Shoaib', 'Nicole', 'Ken']), 
-         paired(date('June 18, 2020'), 'Len', 'Howie'), 
-         paired(date('June 18, 2020'), 'Ray', 'Morgan'), 
-         paired(date('June 18, 2020'), 'Jose', 'Tony'), 
-         paired(date('June 18, 2020'), 'Apoorv', 'Doug')] .
+?- generate_pairs('June 25, 2020', except([]), Pairs).
+Pairs = [triple(date('June 25, 2020'), ['Apoorv', 'Ken', 'Nicole']), 
+         paired(date('June 25, 2020'), 'Shoaib', 'Doug'), 
+         paired(date('June 25, 2020'), 'Len', 'Howie'), 
+         paired(date('June 25, 2020'), 'Ray', 'Morgan'), 
+         paired(date('June 25, 2020'), 'Jose', 'Tony')] .
+
+?- generate_pairs('June 25, 2020', except(['Ray' - 'Morgan']), Pairs).
+Pairs = [triple(date('June 25, 2020'), ['Tony', 'Ken', 'Nicole']), 
+         paired(date('June 25, 2020'), 'Shoaib', 'Doug'), 
+         paired(date('June 25, 2020'), 'Len', 'Howie'), 
+         paired(date('June 25, 2020'), 'Ray', 'Jose'), 
+         paired(date('June 25, 2020'), 'Morgan', 'Apoorv')] .
 */
 
 store_pairs(Date, Pairs) :-
