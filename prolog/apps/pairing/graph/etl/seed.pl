@@ -66,8 +66,16 @@ week(4, Date, List) :-
 
 week(5, Date, List) :- 
    Date = 'June 18, 2020',
-   words("ray howie shoaib ken", As),
-   words("tony apoorv morgan len", Bs),
+   pair_builder(Date, "ray howie shoaib ken", "tony apoorv morgan len", List).
+
+week(6, Date, List) :-
+   Date = 'June 25, 2020',
+   pair_builder(Date, "ray jose ken apoorv doug",
+                "morgan tony howie nicole shoaib", List).
+
+pair_builder(Date, Frists, Secnods, List) :-
+   words(Frists, As),
+   words(Secnods, Bs),
    zip_with(pairu(Date), As, Bs, List).
 
 pairu(DD, A, B, paired(date(DD), A1, B1)) :-

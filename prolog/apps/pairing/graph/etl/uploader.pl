@@ -126,4 +126,5 @@ init_top :-
 % ooh! scary!
 
 clear_graph(DB) :-
+   write('Clearing graph database'), nl,
    store_graph(DB, ["MATCH (m) DETACH DELETE m"]).
