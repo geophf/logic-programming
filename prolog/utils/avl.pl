@@ -327,8 +327,11 @@ avl_set_difference(AVL0, AVL1, Diff) :-
    avl_empty(E),
    reduce(asd1(AVL1), E, Keys0, Diff).
 
+avl_add_all(List, T0, AVL) :-
+   reduce(avl_add, T0, List, AVL).
+
 avl_add(Elt, T0, AVL) :-
-   avl_put(T0, Elt, AVL).
+   avl_replace(T0, Elt, AVL).
 
 asd1(AVL, Key) -->
    { avl_has(AVL, Key) } ->
