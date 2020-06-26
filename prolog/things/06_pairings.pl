@@ -12,6 +12,8 @@ Solution: voila!
 
 data_store('TEAM_PAIRING').
 
+% selects only the active members of Jigsaw
+
 jigsawyers(Members) :-
    data_store(DB),
    query_graph_store(DB, ["MATCH (p:Jigsawyer:ACTIVE) RETURN p"], Response),
@@ -19,6 +21,8 @@ jigsawyers(Members) :-
    map(extract(name), Rows, Members).
 
 % NamesStr is the names you want to add, e.g.: "Bob Joe Fred" ...
+
+% upload_names("Len Howie Ray Nicole Morgan Jose Tony Apoorv Ken Doug Shoaib").
 
 upload_names(NamesStr) :-
    words(NamesStr, Names),
