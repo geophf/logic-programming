@@ -2,6 +2,8 @@
 
 /* Some list routines */
 
+cons(H, T, [H|T]).
+
 head([H|_], H).
 tail([_|T], T).
 
