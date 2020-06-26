@@ -97,3 +97,40 @@ null_or_in(AVL, Key, n(Key, Val)) :-
       Val = V0
    ;
       Val = [].
+
+/*
+I think the simplest translation from-to is graph-form - human-friendly form.
+*/
+
+graph_term_form_human_friendly_form(Graph, Human) :-
+   var(Graph) ->
+      h2g(Human, Graph)
+   ;
+      g2h(Graph, Human).
+
+h2g(Human, digraph(Nodes, Arcs)) :-
+   avl_empty(E),
+   h2g1(Human, AVL, E, Arcs, []),
+   avl_keys(AVL, Nodes).
+
+h2g1([], A, A) --> [].
+h2g1([H|T], AVL, Base) -->
+   ({ H = (A>B/L) } ->
+      { avl_add_all([A,B], Base, A1) },
+      [a(A, B, L)]
+   ;
+      { avl_add(H, Base, A1) }),
+   h2g1(T, AVL, A1).
+
+g2h(digraph(Nodes, Arcs), Human) :-
+   avl_empty(E),
+   map(dup, Nodes, NNodes),
+   list_to_avl(NNodes, AllNodes),
+   reduce(add_arc, E, Arcs, ArcNodes),
+   avl_set_difference(AllNodes, ArcNodes, SoloAVL),
+   avl_keys(SoloAVL, SoloNodes),
+   map1(arc_2_human, Arcs, Human, SoloNodes).
+
+add_arc(a(A, B, _)) --> avl_add_all([A, B]).
+
+arc_2_human(a(A, B, L), (A>B/L)).
