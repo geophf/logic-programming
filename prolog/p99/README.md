@@ -194,7 +194,7 @@ arc(p,m,5).
 ```
 
 *Graph-term form*
-`digraph([k,m,p,q],[a(m,p,7),a(p,m,5),a(p,q,9)])`
+`digraph([k,m,p,q],[a(m,q,7),a(p,m,5),a(p,q,9)])`
 
 *Adjacency-list form*
 `[n(k,[]),n(m,[q/7]),n(p,[m/5,q/9]),n(q,[])]`
