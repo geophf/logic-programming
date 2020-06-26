@@ -321,3 +321,17 @@ avl_keys1(t(K, _V, L, R, _D)) -->
    avl_keys1(L),
    [K],
    avl_keys1(R).
+
+avl_set_difference(AVL0, AVL1, Diff) :-
+   avl_keys(AVL0, Keys0),
+   avl_empty(E),
+   reduce(asd1(AVL1), E, Keys0, Diff).
+
+avl_add(Elt, T0, AVL) :-
+   avl_put(T0, Elt, AVL).
+
+asd1(AVL, Key) -->
+   { avl_has(AVL, Key) } ->
+      id
+   ;
+      avl_add(Key).
