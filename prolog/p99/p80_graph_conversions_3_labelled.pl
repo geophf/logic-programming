@@ -1,6 +1,12 @@
 :- ['utils/avl'].
 :- ['utils/list'].
 :- ['utils/cat'].
+:- ['utils/cypher'].
+:- ['utils/neo4j'].
+
+:- ['p99/utils'].
+
+labelled_graph_example(digraph([k,m,p,q],[a(m,q,7),a(p,m,5),a(p,q,9)])).
 
 arc(m,q,7).
 arc(p,q,9).
@@ -134,3 +140,28 @@ g2h(digraph(Nodes, Arcs), Human) :-
 add_arc(a(A, B, _)) --> avl_add_all([A, B]).
 
 arc_2_human(a(A, B, L), (A>B/L)).
+
+% ------------------------------------------------------ BONIS ROUND! -----
+
+% Let's upload this graph to our data store ... how much do we need to change?
+
+graph_me_baybee(Graph) :-
+   p99_data_store(DB),
+   clear_graph(DB),
+   marshall_statements(Graph, Stmts),
+   store_graph(DB, Stmts),
+   write('It is uploaded, baybee!'), nl.
+
+marshall_statements(digraph(Nodes, Arcs), Stmts) :-
+   map(tag_tag(node, name), Nodes, NNodes),
+   map(create_my_rel, Arcs, CreateRels),
+   map1(create_node, NNodes, Stmts, CreateRels).
+
+tag_tag(Outer, Inner, Val, Tagged) :-
+   tag(Inner, Val, In),
+   tag(Outer, In, Tagged).
+
+create_my_rel(a(A, B, L), Stmt) :-
+   tag_tag(node, name, A, NodeA),
+   tag_tag(node, name, B, NodeB),
+   merge_relation(edge(distance(L)), NodeA - NodeB, Stmt).
