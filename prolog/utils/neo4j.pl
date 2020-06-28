@@ -17,11 +17,26 @@ Routines to connect to, upload to, and download from neo4j graph store.
 :- ['utils/cypher'].
 :- ['utils/graph'].
 
-/* ------------------------------------------------------- uploading ---- */
+% ------------------------------------------------------- UPLOADING -----
 
-upload_simple_graph(Graph) :-
-   materialize_cyphers(Graph, Cyphers, []),
-   store_graph(Cyphers).
+% for when you're feeling salty! ;)
+
+clear_graph(DB) :-
+   store_graph(DB, ["MATCH (n) DETACH DELETE n"]).
+
+store_graph(Database, Cyphers) :-
+   store_graph_helper(Database, Cyphers, _).
+
+store_graph_helper(Database, Cyphers, Response) :-
+   graph_connect_info(Database, User, Pass, URL),
+   transaction(URL, Endpoint),
+   store_graph1(Cyphers, User, Pass, Endpoint, Response).
+
+store_graph1(Cyphers, User, Pass, Endpoint, Response) :-
+   map(tag(query), Cyphers, Stmts),
+   prolog_to_json(cypher(Stmts), JSON),
+   http_post(Endpoint, json(JSON), Response,
+             [authorization(basic(User, Pass))]).
 
 % stolen from things/05_environment
 
@@ -37,8 +52,8 @@ graph_connect_info(Database, User, Pass, Endpoint) :-
    getenv(P, Pass),
    getenv(E, Endpoint).
 
-prolog_graph_connect(User, Pass, Endpoint) :-
-   graph_connect_info('PROLOG_GRAPH', User, Pass, Endpoint).
+tag(Fn, Val, Tag) :-
+   Tag =.. [Fn, Val].
 
 % generalized from things/04_REST_endpoint
 
@@ -49,23 +64,6 @@ transaction(URL, Xact) :-
 
    string_concat(DB, "transaction/commit", BD),
    atom_string(Xact, BD).
-
-store_graph(Database, Cyphers) :-
-   store_graph_helper(Database, Cyphers, _).
-
-store_graph_helper(Database, Cyphers, Response) :-
-   graph_connect_info(Database, User, Pass, URL),
-   transaction(URL, Endpoint),
-   store_graph1(Cyphers, User, Pass, Endpoint, Response).
-
-tag(Fn, Val, Tag) :-
-   Tag =.. [Fn, Val].
-
-store_graph1(Cyphers, User, Pass, Endpoint, Response) :-
-   map(tag(query), Cyphers, Stmts),
-   prolog_to_json(cypher(Stmts), JSON),
-   http_post(Endpoint, json(JSON), Response,
-             [authorization(basic(User, Pass))]).
 
 /* ------------------------------------------------------- downloading --- */
 
