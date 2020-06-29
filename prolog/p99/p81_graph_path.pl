@@ -37,11 +37,11 @@ be impossible for some As or Bs
 */
 graph_path(Graph, A, B, Path) :-
    snd(Graph, Arcs),
-   delete_left_arc(A, Arc1, Arcs, Arcs0),
+   delete_arc(fst, A, Arc1, Arcs, Arcs0),
    (snd(Arc1, B) ->
        Path = [Arc1]
    ;
-       delete_right_arc(B, Brc1, Arcs0, Arcs1),
+       delete_arc(snd, B, Brc1, Arcs0, Arcs1),
        gp1(Arcs1, Arc1, Brc1, Path)).
 
 gp1(Arcs, Arc1, Brc1, Path) :-
@@ -53,19 +53,12 @@ gp1(Arcs, Arc1, Brc1, Path) :-
        graph_path(digraph([], Arcs), A1, B1, Path1),
        append([Arc1|Path1], [Brc1], Path)).
 
-delete_left_arc(A, Arc, [Ar|Cs], Rest) :-
-    fst(Ar, A),
+delete_arc(Fn, A, Arc, [Ar|Cs], Rest) :-
+    call(Fn, Ar, A),
     Arc = Ar,
     Rest = Cs.
-delete_left_arc(A, Arc, [Ar|Cs], [Ar|Rest]) :-
-    delete_left_arc(A, Arc, Cs, Rest).
-
-delete_right_arc(B, Arc, [Ar|Cs], Rest) :-
-    snd(Ar, B),
-    Ar = Arc,
-    Rest = Cs.
-delete_right_arc(B, Arc, [Ar|Cs], [Ar|Rest]) :-
-   delete_right_arc(B, Arc, Cs, Rest).
+delete_arc(Fn, A, Arc, [Ar|Cs], [Ar|Rest]) :-
+    delete_arc(Fn, A, Arc, Cs, Rest).
 
 /*
 ?- arc_clause2graph_term(Gr),                                                   graph_path(Gr, s, r, Path).
