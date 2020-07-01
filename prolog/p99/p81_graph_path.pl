@@ -7,17 +7,25 @@ in the graph G. The predicate should return all paths via backtracking.
 
 % Let's use the directed graph from problem 80.
 
-:- ['p99/p80_graph_conversions_2_directed'].
+% :- ['p99/p80_graph_conversions_2_directed'].
+
+% let's use a cyclic graph:
+
+:- ['p99/p83_spanning_tree'].
 
 :- ['utils/list'].
 :- ['utils/cat'].
 :- ['utils/avl'].
+:- ['utils/graph'].
 
 /*
-Recall that:
+Note that:
 
-?- arc_clause2graph_term(Gr).
-Gr = digraph([r,s,t,u,v], [a(s,u), a(u,r), a(s,r), a(u,s), a(v,u), a(t,t)]) .
+?- spanning_tree_graph(Gr).
+Gr = digraph([a, b, c, d, e, f, g, h],
+             [a(a, b, 5), a(b, a, 5), a(a, d, 3), 
+              a(d, a, 3), a(b, c, 2), a(c, b, 2), 
+              a(b, e, 4), a(..., ..., ...)|...]).
 
 and:
 
@@ -36,12 +44,14 @@ So unpair/3 works on a/2 and on a/3.
 I need to get from vertex A to vertex B in graph Gr, even though that might
 be impossible for some As or Bs
 */
-graph_path(Graph, A, B, Path) :-
+
+path(Graph, A, B, Path) :-
    fst(Graph, Nodes),
    map(dup, Nodes, Dupes),
    list_to_avl(Dupes, Available),
    snd(Graph, Arcs),
-   graph_path1(Available, Arcs, A, B, Path).
+   remove_node(B, Available, Avail),
+   graph_path1(Avail, Arcs, A, B, Path).
 
 graph_path1(Available, Arcs, A, B, Path) :-
    delete_arc(fst, A, Arc1, Arcs, Arcs0),
@@ -68,26 +78,14 @@ gp1(Available, Arcs, Arc1, Brc1, Path) :-
        graph_path1(Available, Arcs, A1, B1, Path1),
        append([Arc1|Path1], [Brc1], Path)).
 
-delete_arc(Fn, A, Arc, [Ar|Cs], Rest) :-
-    call(Fn, Ar, A),
-    Arc = Ar,
-    Rest = Cs.
-delete_arc(Fn, A, Arc, [Ar|Cs], [Ar|Rest]) :-
-    delete_arc(Fn, A, Arc, Cs, Rest).
-
 /*
-?- arc_clause2graph_term(Gr),                                                   graph_path(Gr, u, r, Path).
-Path = [a(u, r)] ;
-Path = [a(u, s), a(s, r)] ;
-false.
-
-?- arc_clause2graph_term(Gr),                                                   graph_path(Gr, v, r, Path).
-Path = [a(v, u), a(u, r)] ;
-Path = [a(v, u), a(u, s), a(s, r)] ;
-false.
-
-?- arc_clause2graph_term(Gr),                                                   graph_path(Gr, s, r, Path).
-Path = [a(s, u), a(u, r)] ;
-Path = [a(s, r)] ;
+?- spanning_tree_graph(Gr), path(Gr, a,b,Path).
+Path = [a(a, b, 5)] ;
+Path = [a(a, d, 3), a(d, e, 7), a(e, c, 6), a(c, b, 2)] ;
+Path = [a(a, d, 3), a(d, f, 4), a(f, g, 4), a(g, h, 1), a(h, e, 5), a(e, c, 6), a(c, b, 2)] ;
+Path = [a(a, d, 3), a(d, g, 3), a(g, h, 1), a(h, e, 5), a(e, c, 6), a(c, b, 2)] ;
+Path = [a(a, d, 3), a(d, e, 7), a(e, b, 4)] ;
+Path = [a(a, d, 3), a(d, f, 4), a(f, g, 4), a(g, h, 1), a(h, e, 5), a(e, b, 4)] ;
+Path = [a(a, d, 3), a(d, g, 3), a(g, h, 1), a(h, e, 5), a(e, b, 4)] ;
 false.
 */
