@@ -161,7 +161,8 @@ yes
 delete(H, [H|T], T).
 delete(P, [H|T], [H|L]) :-
    delete(P, T, L).
-delete(_, [], []).   % the "element isn't here" is the don't-care case.
+% delete(_, [], []).   % the "element isn't here" is the don't-care case.
+% hmmm ... don't care-case for delete has ramifications on fail-on-not-found.
 
 /* 
 pickN(X, Picked, Domain, Range) is deleteList for ground Picked and free Range
