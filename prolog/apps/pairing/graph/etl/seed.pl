@@ -12,6 +12,7 @@ member(apoorv).
 member(ken).
 member(doug).
 member(shoaib).
+member(victor).
 
 ex_member(roxi).
 
@@ -66,12 +67,13 @@ week(4, Date, List) :-
 
 week(5, Date, List) :- 
    Date = 'June 18, 2020',
-   pair_builder(Date, "ray howie shoaib ken", "tony apoorv morgan len", List).
+   pair_builder(Date, "ray howie shoaib ken", 
+                      "tony apoorv morgan len", List).
 
 week(6, Date, List) :-
    Date = 'June 25, 2020',
    pair_builder(Date, "ray jose ken apoorv doug",
-                "morgan tony howie nicole shoaib", List).
+                      "morgan tony howie nicole shoaib", List).
 
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),
