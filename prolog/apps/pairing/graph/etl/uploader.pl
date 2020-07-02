@@ -122,9 +122,3 @@ init_top :-
    clear_graph(DB),
    create_node(top, T),
    store_graph(DB, [T]).
-
-% ooh! scary!
-
-clear_graph(DB) :-
-   write('Clearing graph database'), nl,
-   store_graph(DB, ["MATCH (m) DETACH DELETE m"]).

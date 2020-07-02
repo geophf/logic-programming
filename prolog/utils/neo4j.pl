@@ -19,9 +19,10 @@ Routines to connect to, upload to, and download from neo4j graph store.
 
 % ------------------------------------------------------- UPLOADING -----
 
-% for when you're feeling salty! ;)
+% ooh, scary! for when you're feeling salty! ;)
 
 clear_graph(DB) :-
+   write('Clearing graph database'), nl,
    store_graph(DB, ["MATCH (n) DETACH DELETE n"]).
 
 store_graph(Database, Cyphers) :-
