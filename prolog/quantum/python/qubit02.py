@@ -24,8 +24,8 @@ def build_circuit(n):
    print(circ)
    return circ
 
-def run_program(circuit, provider):
-   qcomputer = provider.get_backend('ibmq_16_melbourne')
+def run_program(circuit, provider, backend):
+   qcomputer = provider.get_backend(backend)
    job = execute(circuit, qcomputer, shots=1000)
 
    bits = job.result().get_counts()
@@ -33,8 +33,11 @@ def run_program(circuit, provider):
 
 if __name__ == '__main__':
    token = sys.argv[1]
+   backend = sys.argv[2]     # e.g.: ibmq_16_melbourne
    print('Running qcircuit with token', '<not tellin>')
    provider = set_up(token)
    circ = build_circuit(3)
-   rv = run_program(circ, provider)
+   rv = run_program(circ, provider, backend)
    print('Result is', rv)
+
+# $ python qubit02.py `cat my_token.txt` ibmq_16_melbourne
