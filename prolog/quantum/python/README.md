@@ -34,7 +34,7 @@ To run the demos:
 
 and
 
-`$ python qubit02.py `cat my_token.txt` ibmq_16_melbourne`
+`$ python qubit02.py &#96;cat my_token.txt&#96; ibmq_16_melbourne`
 
 to run the second deom on melbourne's quantum computer. N.b.: it takes 3-4
 minutes to run that demo.
