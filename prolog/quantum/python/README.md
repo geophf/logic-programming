@@ -27,3 +27,14 @@ $ pip install matplotlib
 ```
 
 Then do the [qiskit quantum tutorials](https://qiskit.org/documentation/tutorials/circuits/1_getting_started_with_qiskit.html). YAY!
+
+To run the demos:
+
+`$ python qubit01.py`
+
+and
+
+`$ python qubit02.py `cat my_token.txt` ibmq_16_melbourne`
+
+to run the second deom on melbourne's quantum computer. N.b.: it takes 3-4
+minutes to run that demo.
