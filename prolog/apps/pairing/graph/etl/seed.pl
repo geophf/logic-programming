@@ -13,57 +13,29 @@ member(ken).
 member(doug).
 member(shoaib).
 member(victor).
+member(robert).
+member(kate).
 
 ex_member(roxi).
 
-% week 1: may 21
+week(1, Date, [triple(date(Date), [len, howie, tony])|List]) :-
+   Date = 'May 21, 2020',
+   pair_builder(Date, "ray morgan shoaib ken",
+                      "nicole jose apoorv doug", List).
 
-week(1, 'May 21, 2020', List) :-
-   % paired(date('May 21, 2020'), len, howie).   /* triple */
-   % paired(date('May 21, 2020'), howie, tony).  /* triple */
-   List = [paired(date('May 21, 2020'), ray, nicole),
-           paired(date('May 21, 2020'), morgan, jose),
-           paired(date('May 21, 2020'), shoaib, apoorv),
-           paired(date('May 21, 2020'), ken, doug),
-           triple(date('May 21, 2020'), [len, howie, tony])].
+week(2, Date, [triple(date(Date), [ray, shoaib, doug])|List]) :-
+   Date = 'May 28, 2020',
+   pair_builder(Date, "len morgan howie ken",
+                      "apoorv nicole jose tony", List).
 
-% week 2: may 28
+week(3, Date, [triple(date(Date),[doug,jose,apoorv])|List]) :-
+   Date = 'June 4, 2020',
+   pair_builder(Date, "len howie morgan ken",
+                      "ray nicole tony shoaib", List).
 
-week(2, 'May 28, 2020', List) :-
-   % paired(date('May 28, 2020'), ray, shoaib).   /* triple */
-   % paired(date('May 28, 2020'), shoaib, doug).  /* triple */
-   List = [paired(date('May 28, 2020'), len, apoorv),
-           paired(date('May 28, 2020'), morgan, nicole),
-           paired(date('May 28, 2020'), howie, jose),
-           paired(date('May 28, 2020'), ken, tony),
-           triple(date('May 28, 2020'), [ray, shoaib, doug])].
-
-% week 3: jun 04
-
-week(3, 'June 4, 2020', List) :-
-   % paired(date('June 4, 2020'),jose,apoorv).    /* triple */
-   List = [paired(date('June 4, 2020'),len,ray),
-           paired(date('June 4, 2020'),howie,nicole),
-           paired(date('June 4, 2020'),morgan,tony),
-           paired(date('June 4, 2020'),ken,shoaib),
-           triple(date('June 4, 2020'),[doug,jose,apoorv])].
-
-/*
-week 4: jun 11 ... some things up in the air about this week:
-Nicole was called away. Tony/Ray/Jose/Apoorv: unknown ... pair them all
-together? idk.
-*/
-
-week(4, Date, List) :-
+week(4, Date, [triple(date(Date),[ray,jose,tony])|List]) :-
    Date = 'June 11, 2020',
-   DD = date(Date),
-   List = [paired(DD,ken,len),
-           paired(DD,shoaib,morgan),
-
-% ... so: pairs of pairs of pairs? nupe! Apoorv gave me the what's what.
-
-           paired(DD,howie,apoorv),
-           triple(DD,[ray,jose,tony])].
+   pair_builder(Date, "ken shoaib howie", "len morgan apoorv", List).
 
 week(5, Date, List) :- 
    Date = 'June 18, 2020',
@@ -74,6 +46,17 @@ week(6, Date, List) :-
    Date = 'June 25, 2020',
    pair_builder(Date, "ray jose ken apoorv doug",
                       "morgan tony howie nicole shoaib", List).
+
+% no slow-back July 2, as that was a short week.
+
+week(7, Date, List) :-
+   Date = 'July 9, 2020',
+   pair_builder(Date, "doug ray nicole", "kate jose tony", List).
+
+week(8, Date, List) :-
+   Date = 'July 16, 2020',
+   pair_builder(Date, "ray tony ken shoaib len",
+                      "nicole apoorv doug robert howie", List).
 
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),
