@@ -71,6 +71,13 @@ week(11, Date, List) :-
    Date = 'August 6, 2020',
    pair_builder(Date, "tony apoorv doug len", "ken shoaib ray morgan", List).
 
+week(12, Date, List) :-
+   Date = 'August 13, 2020',
+   pair_builder(Date,
+                "len howie jose tony ken",
+                "ray morgan apoorv doug shoaib",
+                List).
+
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),
    words(Secnods, Bs),

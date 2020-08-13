@@ -22,3 +22,20 @@ uploader(week(Date,Pairings)) :-
    write('uploading pairings for '), write(Date), nl,
    upload_pairings(Date, Pairings, Meetn),
    link_pairings(Meetn).
+
+/*
+To refresh the entire database (clear it and reupload all historical pairings):
+
+?- init_db.
+
+To upload this week's pairings only (say: this week is August 13, 2020):
+
+?- D = 'August 13, 2020',
+   week(_, D, L),
+   uploader(week(D, L)).
+
+To verify the pairings are in neo4j:
+
+MATCH (p)-[:PAIRED { on: 'August 13, 2020'}]->(q) 
+RETURN  p.name,q.name
+*/
