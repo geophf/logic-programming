@@ -78,6 +78,10 @@ week(12, Date, List) :-
                 "ray morgan apoorv doug shoaib",
                 List).
 
+week(13, Date, [triple(date(Date), [len, victor, tony])|List]) :-
+   Date = 'August 27, 2020',
+   pair_builder(Date, "howie morgan apoorv doug", "ray jose ken shoaib", List).
+
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),
    words(Secnods, Bs),
