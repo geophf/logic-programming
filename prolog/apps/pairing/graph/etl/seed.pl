@@ -6,7 +6,6 @@ member(howie).
 member(ray).
 member(morgan).
 member(jose).
-member(tony).
 member(apoorv).
 member(ken).
 member(doug).
@@ -17,6 +16,7 @@ ex_member(roxi).
 ex_member(nicole).
 ex_member(robert).
 ex_member(kate).
+ex_member(tony).
 
 week(1, Date, [triple(date(Date), [len, howie, tony])|List]) :-
    Date = 'May 21, 2020',
@@ -81,6 +81,10 @@ week(12, Date, List) :-
 week(13, Date, [triple(date(Date), [len, victor, tony])|List]) :-
    Date = 'August 27, 2020',
    pair_builder(Date, "howie morgan apoorv doug", "ray jose ken shoaib", List).
+
+week(14, Date, Pairs) :-
+   Date = 'September 10, 2020',
+   pair_builder(Date, "howie ray morgan ken", "jose apoorv shoaib doug", Pairs).
 
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),

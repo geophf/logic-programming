@@ -34,6 +34,10 @@ To upload this week's pairings only (say: this week is August 13, 2020):
    week(_, D, L),
    uploader(week(D, L)).
 
+... alternatively, if you know the week number, you can do it as follows:
+
+?- week(14, D, L), uploader(week(D, L)).
+
 To verify the pairings are in neo4j:
 
 MATCH (p)-[:PAIRED { on: 'August 13, 2020'}]->(q) 
