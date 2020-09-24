@@ -90,6 +90,12 @@ week(15, Date, [triple(date(Date),[apoorv, victor, len])|Pairs]) :-
    Date = 'September 17, 2020',
    pair_builder(Date, "howie ray jose", "shoaib morgan ken", Pairs).
 
+week(16, Date, Pairs) :-
+   Date = 'September 24, 2020',
+   pair_builder(Date, "len ray morgan ken apoorv",
+                      "howie shoaib jose victor doug",
+                Pairs).
+
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),
    words(Secnods, Bs),
