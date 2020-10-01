@@ -1,4 +1,3 @@
-
 % Seed data to initialize the graph-store.
 
 member(len).
@@ -11,6 +10,8 @@ member(ken).
 member(doug).
 member(shoaib).
 member(victor).
+member(elaine).
+member(zack).
 
 ex_member(roxi).
 ex_member(nicole).
@@ -95,6 +96,11 @@ week(16, Date, Pairs) :-
    pair_builder(Date, "len ray morgan ken apoorv",
                       "howie shoaib jose victor doug",
                 Pairs).
+
+week(17, Date, [triple(date(Date),[shoaib,doug,ray])|Pairs]) :-
+   Date = 'October 1, 2020',
+   pair_builder(Date, "ken zack jose elaine",
+                      "morgan len apoorv victor", Pairs).
 
 pair_builder(Date, Frists, Secnods, List) :-
    words(Frists, As),
