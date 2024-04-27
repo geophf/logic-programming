@@ -311,7 +311,7 @@ avl_alter_f1(>, NK, NV, L, R, D, K, V, AlterF, T) :-
         ->  avl_balance_right(NK, NV, L, R1, T)
         ;   T = t(NK, NV, L, R1, D) ).
 
-% why hadn't I thought of this before?
+% why hadn't I thought of this before? ... because avl_gen kinda does this ...
 
 avl_keys(Tree, Keys) :-
    avl_keys1(Tree, Keys, []).
@@ -325,10 +325,13 @@ avl_keys1(t(K, _V, L, R, _D)) -->
 avl_set_difference(AVL0, AVL1, Diff) :-
    avl_keys(AVL0, Keys0),
    avl_empty(E),
-   reduce(asd1(AVL1), E, Keys0, Diff).
+   reduce_from(asd1, AVL1, E, Keys0, Diff).
 
-avl_add_all(List, T0, AVL) :-
-   reduce(avl_add, T0, List, AVL).
+/*
+Actually we want to do a complex reduction where, when we get a hit on a key
+we also want to remove that key from the operand AVL tree, until we have an
+empty tree, then we just do a merge of list_to_avl/3 with a given avl.
+*/
 
 avl_add(Elt, T0, AVL) :-
    avl_replace(T0, Elt, AVL).
@@ -338,3 +341,41 @@ asd1(AVL, Key) -->
       id
    ;
       avl_add(Key).
+
+% To do a more efficient avl_set_difference, we need an effective avl_remove
+
+/*
+Algorithm/Insights
+We will try to understand this algorithm using an example but before that let's 
+go over the major steps of this algorithm. Note that this algorithm is a 
+bottom-up algorithm and hence height restoration of the tree proceeds from 
+leaves to root.
+
+This algorithm is basically a modification of the usual BST deletion algorithm. 
+The steps of this algorithm are -
+
+1. Use general BST deletion algorithm to delete given key from the AVL tree.
+2. After deletion, update the height of the current node of the AVL tree.
+3. Now check the 'balance' at the current node by getting the difference of 
+   height of left sub-tree and height of right sub-tree.
+3a. If 'balance' > 1 then that means the height of the left sub-tree is greater 
+    than the height of the right sub-tree. This indicates left-left or 
+    left-right case(discussed in the previous post). To confirm if this is 
+    left-left or left-right case, we check the balance of left sub-tree of 
+    current node. If it greater than 0 then that confirms left-left case, if it     less than 0 then that confirms left-right case. If it is equal to 0, then       this we can either consider this as a left-left case or as a left-right 
+    case. In this implementation, we consider this as left-left case for 
+    efficiency. For left-left case, we do a right rotation at the current node. 
+    For the left-right case, we do a left rotation at left child of current 
+    node followed by a right rotation at the current node itself.
+3b. If 'balance' < -1 then that means the height of the right sub-tree is 
+    greater than the height of the left sub-tree. This indicates right-right 
+    or right-left case(discussed in the previous post). In this case, if 
+    balance of right sub-tree of current node is less than 0 then this confirms 
+    right-right case, if it is greater than 0 then this confirms right-left 
+    case. If it is equal to 0, then we can either consider this as a right-right
+    case or a right-left case. In this implementation, we will consider this as 
+    a right-right case. In right-right case, we do a left rotation at the 
+    current node. In right-left case, we do a right rotation at the right child 
+    of current node followed by left rotation at the current node itself.
+*/
+
