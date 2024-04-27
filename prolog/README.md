@@ -15,4 +15,4 @@ set and utils/neo4j, utils/graph, and utils/cypher.
 What's my birthday today (April 26, 2024)? A fun little Number Theory constraint
 logic programming problem over a (verra smol) domain of primes.
 
-![Birthday tweet-problem](imgs/57th-bday.png)
+![Birthday tweet-problem](imgs/57th-birthday.png)
